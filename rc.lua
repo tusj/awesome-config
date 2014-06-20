@@ -528,7 +528,7 @@ awful.rules.rules = {
 	{ rule_any = { class = { "eclipse", "Eclipse", "dartium", "Dartium" } },
 	  properties = { tag = tags[1][2],
 	                 layout = awful.layout.suit.max } },
-	{ rule_any = { class = { "skype", "Skype" } },
+	{ rule_any = { class = { "skype", "Skype", "smuxi", "Smuxi" } },
 	  properties = { tag = tags[1][3] } },
 	{ rule_any = { class = { "geary", "Geary" } },
 	  properties = { tag = tags[1][4] } },
