@@ -49,6 +49,7 @@ beautiful.init("/usr/share/awesome/themes/default/theme.lua")
 -- after beatuiful, init revelation
 revelation.init()
 
+-- to change wallpaper randomly
 -- theme.wallpaper =  "/usr/share/backgrounds/hawaii/Arancio.jpg"
 wp_path = "/usr/share/backgrounds/hawaii/" -- has to end with /
 wp_timeout  = 3600 -- seconds interval to change wallpaper
@@ -89,8 +90,10 @@ local layouts =
 widget_rounded_size = 0.3
 widget_height       = 20
 widget_width        = 25
+bar_height          = 25
 
-
+launcher_icon       = "/home/s/icons/hval.svg"
+-- launcher_icon    = "beautiful.awesome_icon"
 
 -- Wallpaper
 if beautiful.wallpaper then
@@ -119,11 +122,11 @@ myawesomemenu = {
 }
 
 mymainmenu = awful.menu({ items = {
-	{ "awesome", myawesomemenu, beautiful.awesome_icon },
+	{ "awesome", myawesomemenu, launcher_icon },
 	{ "open terminal", terminal }}
 })
 
-mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
+mylauncher = awful.widget.launcher({ image = launcher_icon,
 menu = mymainmenu })
 
 -- Menubar configuration
@@ -264,6 +267,7 @@ for s = 1, screen.count() do
 		show_text = false,
 		rounded_size = widget_rounded_size,
 		graph_background_color = "#00000033" })
+
 	-- cpuwidget = blingbling.progress_graph( { height = widget_height,
 	-- 	width = widget_width,
 	-- 	rounded_size = widget_rounded_size
