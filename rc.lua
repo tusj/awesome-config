@@ -90,7 +90,7 @@ local layouts =
 widget_rounded_size = 0.3
 widget_height       = 20
 widget_width        = 25
-bar_height          = 25
+bar_height          = "20"
 
 launcher_icon       = "/home/s/icons/hval.svg"
 -- launcher_icon    = "beautiful.awesome_icon"
@@ -299,7 +299,7 @@ for s = 1, screen.count() do
 		end, 10)
 
     -- Create the wibox
-    mywibox[s] = awful.wibox({ position = "top", screen = s })
+    mywibox[s] = awful.wibox({ position = "top", height = bar_height, screen = s })
 
     -- Widgets that are aligned to the left
     local left_layout = wibox.layout.fixed.horizontal()
@@ -514,6 +514,8 @@ awful.rules.rules = {
 	  callback = function (c)
 		  awful.placement.centered(c, nil)
 	  end },
+	{ rule = { class = "Docky"   },
+      properties = { floating = true } },
     { rule = { class = "MPlayer" },
       properties = { floating = true } },
     { rule_any = { class = { "yakuake", "Yakuake" } },
