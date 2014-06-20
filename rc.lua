@@ -50,7 +50,7 @@ beautiful.init("/usr/share/awesome/themes/default/theme.lua")
 revelation.init()
 
 -- to change wallpaper randomly
--- theme.wallpaper =  "/usr/share/backgrounds/hawaii/Arancio.jpg"
+theme.wallpaper =  "/usr/share/backgrounds/hawaii/Arancio.jpg"
 wp_path = "/usr/share/backgrounds/hawaii/" -- has to end with /
 wp_timeout  = 3600 -- seconds interval to change wallpaper
 
@@ -92,7 +92,7 @@ widget_height       = 20
 widget_width        = 25
 bar_height          = "20"
 
-launcher_icon       = "/home/s/icons/hval.svg"
+launcher_icon       = "/home/s/Dropbox/icons/hval.svg"
 -- launcher_icon    = "beautiful.awesome_icon"
 
 -- Wallpaper
@@ -511,9 +511,8 @@ awful.rules.rules = {
                      keys = clientkeys,
                      buttons = clientbuttons } },
     { rule = { floating = true },
-	  callback = function (c)
-		  awful.placement.centered(c, nil)
-	  end },
+	  callback = function (c) awful.placement.centered(c, nil) end ,
+	  properties = { border_width = beautiful.border_width * 4 } },
 	{ rule = { class = "Docky"   },
       properties = { floating = true } },
     { rule = { class = "MPlayer" },
