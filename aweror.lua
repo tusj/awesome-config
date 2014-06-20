@@ -11,13 +11,11 @@
 
 
 -- get our key bindings from separate ror.lua file
-require("ror")
 
 local awful= require("awful")
 local client=client
 local pairs=pairs
 local table=table
-local allt1=table5
 local print=print
 local USE_T = true
 --local USE_T = false
@@ -86,20 +84,6 @@ function genfun(t3)
    return function()
      aweror.run_or_raise(cmd,table1)
    end
-end
-
-function aweror.genkeys(mod1)
-  rorkeys = awful.util.table.join()
-  for i,v in pairs(allt1) do
-    modifier=""
-    if i:len() > 1 then
-      modifier=i:sub(1, i:find("-")-1)
-      i=i:sub(-1,-1)
-    end
-    rorkeys = awful.util.table.join(rorkeys,
-      awful.key({ mod1, modifier}, i, genfun(v)))
-  end
-  return rorkeys
 end
 
 return aweror

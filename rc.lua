@@ -1,9 +1,9 @@
 -- Standard awesome library
 local gears                  = require("gears")
 local awful                  = require("awful")
-require("eminent")
+                               require("eminent")
 awful.rules                  = require("awful.rules")
-require("awful.autofocus")
+                               require("awful.autofocus")
 local wibox                  = require("wibox") -- Widget and layout library
 local beautiful              = require("beautiful") -- Theme handling library
 local naughty                = require("naughty") -- Notification library
@@ -12,6 +12,7 @@ local vicious                = require("vicious")
 local scratch                = require("scratch")
 local revelation             = require("revelation")
 local ror                    = require("aweror")
+local blingbling             = require("blingbling")
 
 
 
@@ -134,6 +135,7 @@ mywibox = {}
 mypromptbox = {}
 mylayoutbox = {}
 mytaglist = {}
+mytag = {}
 mytaglist.buttons = awful.util.table.join(
 	awful.button({ }, 1, awful.tag.viewonly),
 	awful.button({ modkey }, 1, awful.client.movetotag),
@@ -191,7 +193,8 @@ for s = 1, screen.count() do
                            awful.button({ }, 4, function () awful.layout.inc(layouts, 1) end),
                            awful.button({ }, 5, function () awful.layout.inc(layouts, -1) end)))
     -- Create a taglist widget
-    mytaglist[s] = awful.widget.taglist(s, awful.widget.taglist.filter.all, mytaglist.buttons)
+    -- mytaglist[s] = awful.widget.taglist(s, awful.widget.taglist.filter.all, mytaglist.buttons)
+	mytag[s] = blingbling.tagslist(s, awful.widget.taglist.filter.all, mytaglist.buttons) -- [[, { normal = {}, focus = {}, urgent = {})
 
     -- Create a tasklist widget
     mytasklist[s] = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, mytasklist.buttons)
@@ -264,7 +267,8 @@ for s = 1, screen.count() do
     -- Widgets that are aligned to the left
     local left_layout = wibox.layout.fixed.horizontal()
     left_layout:add(mylauncher)
-    left_layout:add(mytaglist[s])
+    -- left_layout:add(mytaglist[s])
+    left_layout:add(wibox.layout.margin(mytag[s], 0, 0, 1, 1))
     left_layout:add(mypromptbox[s])
 
     -- Widgets that are aligned to the right
