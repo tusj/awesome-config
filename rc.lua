@@ -418,8 +418,10 @@ globalkeys = awful.util.table.join(
     -- Menubar
     awful.key({ modkey,           }, "p", function() menubar.show() end),
     awful.key({ modkey, "Control" }, "c", function() run_or_raise("chromium --app='http://calendar.google.com'", { name = "Google Kalender" }) end),
-    awful.key({ modkey, "Control" }, "g", function() run_or_raise("geary", { name = "Geary" }) end),
-    awful.key({ modkey, "Control" }, "e", function() run_or_raise("eclipse", { name = "Eclipse" }) end)
+    awful.key({ modkey, "Control" }, "g", function() run_or_raise("geary",    { name = "Geary" }) end),
+    awful.key({ modkey, "Control" }, "e", function() run_or_raise("eclipse",  { name = "Eclipse" }) end),
+    awful.key({ modkey, "Control" }, "b", function() run_or_raise("chromium", { name = "Chromium" }) end),
+    awful.key({ modkey, "Control" }, "t", function() run_or_raise(terminal,   { name = "Terminology" }) end)
     -- awful.key({ modkey, "Shift"   }, "p", function() os.execute("synapse") end)
     -- awful.key({ modkey, "Shift"   }, "f", function() os.execute("catfish") end)
 
