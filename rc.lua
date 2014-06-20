@@ -120,7 +120,8 @@ mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
 menu = mymainmenu })
 
 -- Menubar configuration
-app_folders = { "/usr/share/applications", "~/.local/share/applications" }
+menubar.app_folders = { "/usr/share/applications/", "/home/s/.local/share/applications/" }
+menubar.cache_entries = true
 menubar.utils.terminal = terminal -- Set the terminal for applications that require it
 -- }}}
 --
