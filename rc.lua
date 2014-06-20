@@ -83,16 +83,22 @@ local layouts =
 	awful.layout.suit.max.fullscreen,
 	-- awful.layout.suit.magnifier
 }
--- }}}
 
 
--- {{{ Wallpaper
+-- Display
+widget_rounded_size = 0.3
+widget_height       = 20
+widget_width        = 25
+
+
+
+-- Wallpaper
 if beautiful.wallpaper then
 	for s = 1, screen.count() do
 		gears.wallpaper.maximized(beautiful.wallpaper, s, true)
 	end
 end
--- }}}
+
 
 -- {{{ Tags
 -- Define a tag table which hold all screen tags.
@@ -218,6 +224,21 @@ for s = 1, screen.count() do
 	awful.util.table.join(awful.button({ }, 1, function () kbdcfg.switch() end))
 	)
 	-- Memory
+	memwidget = blingbling.wlourf_circle_graph({
+		radius = widget_width / 4,
+		height = widget_height,
+		width = widget_width,
+		show_text = true,
+		-- radius = 5, height = 18, width = 36, show_text = true,
+		label = "",
+		h_margin = 1,
+		v_margin = 1 })
+	memwidget:set_graph_colors({{"#88aa00ff", 0},
+		{"#d4aa00ff", 0.5},
+		{"#d45500ff", 0.77}})
+
+	vicious.register(memwidget, vicious.widgets.mem, '$1', 5)
+
 	-- Initialize widget
 	-- memwidgetgraph = awful.widget.progressbar()
 	-- -- Progressbar properties
@@ -232,20 +253,32 @@ for s = 1, screen.count() do
 	-- vicious.register(memwidgetgraph, vicious.widgets.mem, "$1", 13)
 
 	-- Initialize widget
-	memwidget = wibox.widget.textbox()
+	-- memwidget = wibox.widget.textbox()
 	-- Register widget
-	vicious.register(memwidget, vicious.widgets.mem, "$1%", 13)
+	-- vicious.register(memwidget, vicious.widgets.mem, "$1%", 13)
 
 	-- CPU
-	-- Initialize widget
-	cpuwidget = awful.widget.graph()
-	-- Graph properties
-	cpuwidget:set_width(20)
-	cpuwidget:set_background_color("#494B4F")
-	cpuwidget:set_color({ type = "linear", from = { 0, 0 }, to = { 10,0 }, stops = { {0, "#FF5656"}, {0.5, "#88A175"},
-						{1, "#AECF96" }}})
-	-- Register widget
-	vicious.register(cpuwidget, vicious.widgets.cpu, "$1")
+	-- blingbling type
+	cpuwidget = blingbling.line_graph({ height = widget_height,
+		width = widget_width,
+		show_text = false,
+		rounded_size = widget_rounded_size,
+		graph_background_color = "#00000033" })
+	-- cpuwidget = blingbling.progress_graph( { height = widget_height,
+	-- 	width = widget_width,
+	-- 	rounded_size = widget_rounded_size
+	-- })
+	vicious.register(cpuwidget, vicious.widgets.cpu, '$1', 1)
+	-- awful type
+	-- -- Initialize widget
+	-- cpuwidget = awful.widget.graph()
+	-- -- Graph properties
+	-- cpuwidget:set_width(20)
+	-- cpuwidget:set_background_color("#494B4F")
+	-- cpuwidget:set_color({ type = "linear", from = { 0, 0 }, to = { 10,0 }, stops = { {0, "#FF5656"}, {0.5, "#88A175"},
+	-- 					{1, "#AECF96" }}})
+	-- -- Register widget
+	-- vicious.register(cpuwidget, vicious.widgets.cpu, "$1")
 
 
 	-- MPD
