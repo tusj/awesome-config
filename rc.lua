@@ -1,18 +1,20 @@
 -- Standard awesome library
-local gears = require("gears")
-local awful = require("awful")
+local gears                  = require("gears")
+local awful                  = require("awful")
 require("eminent")
-awful.rules = require("awful.rules")
+awful.rules                  = require("awful.rules")
 require("awful.autofocus")
--- Widget and layout library
-local wibox = require("wibox")
--- Theme handling library
-local beautiful = require("beautiful")
--- Notification library
-local naughty = require("naughty")
-local menubar = require("menubar")
-local vicious = require("vicious")
-local scratch = require("scratch")
+local wibox                  = require("wibox") -- Widget and layout library
+local beautiful              = require("beautiful") -- Theme handling library
+local naughty                = require("naughty") -- Notification library
+local menubar                = require("menubar")
+local vicious                = require("vicious")
+local scratch                = require("scratch")
+local revelation             = require("revelation")
+local ror                    = require("aweror")
+
+
+
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
 -- another config (This code will only ever execute for the fallback config)
@@ -21,6 +23,7 @@ if awesome.startup_errors then
 	title = "Oops, there were errors during startup!",
 	text = awesome.startup_errors })
 end
+
 
 -- Handle runtime errors after startup
 do
@@ -41,6 +44,10 @@ end
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init("/usr/share/awesome/themes/default/theme.lua")
+
+-- after beatuiful, init revelation
+revelation.init()
+
 -- theme.wallpaper =  "/usr/share/backgrounds/hawaii/Arancio.jpg"
 wp_path = "/usr/share/backgrounds/hawaii/" -- has to end with /
 wp_timeout  = 3600 -- seconds interval to change wallpaper
@@ -76,7 +83,7 @@ local layouts =
 	-- awful.layout.suit.magnifier
 }
 -- }}}
--- Scratch manager
+
 
 -- {{{ Wallpaper
 if beautiful.wallpaper then
@@ -113,6 +120,7 @@ mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
 menu = mymainmenu })
 
 -- Menubar configuration
+app_folders = { "/usr/share/applications", "~/.local/share/applications" }
 menubar.utils.terminal = terminal -- Set the terminal for applications that require it
 -- }}}
 --
@@ -288,10 +296,12 @@ root.buttons(awful.util.table.join(
 -- }}}
 
 -- {{{ Key bindings
+
 globalkeys = awful.util.table.join(
     awful.key({ modkey,               }, "Left",   awful.tag.viewprev       ),
     awful.key({ modkey,               }, "Right",  awful.tag.viewnext       ),
     awful.key({ modkey,               }, "Escape", awful.tag.history.restore),
+	awful.key({ modkey,               }, "e",      revelation),
 
     awful.key({ modkey,               }, "j",
         function ()
@@ -348,16 +358,15 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey, "Control" }, "l",     function () awful.tag.incncol(-1)         end),
     awful.key({ modkey,           }, "space", function () awful.layout.inc(layouts,  1) end),
     awful.key({ modkey, "Shift"   }, "space", function () awful.layout.inc(layouts, -1) end),
-    awful.key({ modkey, "Shift"   }, "space", function () awful.layout.inc(layouts, -1) end),
     awful.key({ modkey,           }, "m",     function () awful.layout.set(awful.layout.suit.max) end),
     awful.key({ modkey,           }, "f",     function () awful.layout.set(awful.layout.suit.max.fullscreen) end),
 	awful.key({ modkey            }, "t",     function () awful.layout.set(awful.layout.suit.tile) end),
-    awful.key({ modkey, "Control" }, "n", awful.client.restore),
+    -- awful.key({ modkey, "Control" }, "n", awful.client.restore),
 
     -- Prompt
-    awful.key({ modkey },            "r",     function () mypromptbox[mouse.screen]:run() end),
+    awful.key({ modkey,           }, "r", function () mypromptbox[mouse.screen]:run() end),
 
-    awful.key({ modkey }, "x",
+    awful.key({ modkey,           }, "x",
               function ()
                   awful.prompt.run({ prompt = "Run Lua code: " },
                   mypromptbox[mouse.screen].widget,
@@ -365,7 +374,12 @@ globalkeys = awful.util.table.join(
                   awful.util.getdir("cache") .. "/history_eval")
               end),
     -- Menubar
-    awful.key({ modkey }, "p", function() menubar.show() end)
+    awful.key({ modkey,           }, "p", function() menubar.show() end),
+    awful.key({ modkey, "Control" }, "c", function() run_or_raise("chromium --app='http://calendar.google.com'", { name = "Google Kalender" }) end),
+    awful.key({ modkey, "Control" }, "g", function() run_or_raise("geary", { name = "Geary" }) end),
+    awful.key({ modkey, "Control" }, "e", function() run_or_raise("eclipse", { name = "Eclipse" }) end)
+    -- awful.key({ modkey, "Shift"   }, "p", function() os.execute("synapse") end)
+    -- awful.key({ modkey, "Shift"   }, "f", function() os.execute("catfish") end)
 
 )
 
@@ -376,12 +390,12 @@ clientkeys = awful.util.table.join(
     awful.key({ modkey, "Control" }, "Return", function (c) c:swap(awful.client.getmaster()) end),
     awful.key({ modkey,           }, "o",      awful.client.movetoscreen                        ),
     awful.key({ modkey,           }, "t",      function (c) c.ontop = not c.ontop            end),
-    awful.key({ modkey,           }, "n",
-        function (c)
-            -- The client currently has the input focus, so it cannot be
-            -- minimized, since minimized clients can't have the focus.
-            c.minimized = true
-        end),
+    -- awful.key({ modkey,           }, "n",
+    --     function (c)
+    --         -- The client currently has the input focus, so it cannot be
+    --         -- minimized, since minimized clients can't have the focus.
+    --         c.minimized = true
+    --     end),
     awful.key({ modkey,           }, "y",
         function (c)
             c.maximized_horizontal = not c.maximized_horizontal
@@ -599,3 +613,57 @@ end)
 
 -- initial start when rc.lua is first run
 wp_timer:start()
+
+
+--- Spawns cmd if no client can be found matching properties
+-- If such a client can be found, pop to first tag where it is visible, and give it focus
+-- @param cmd the command to execute
+-- @param properties a table of properties to match against clients.  Possible entries: any properties of the client object
+function run_or_raise(cmd, properties)
+   local clients = client.get()
+   local focused = awful.client.next(0)
+   local findex = 0
+   local matched_clients = {}
+   local n = 0
+   for i, c in pairs(clients) do
+      --make an array of matched clients
+      if match(properties, c) then
+         n = n + 1
+         matched_clients[n] = c
+         if c == focused then
+            findex = n
+         end
+      end
+   end
+   if n > 0 then
+      local c = matched_clients[1]
+      -- if the focused window matched switch focus to next in list
+      if 0 < findex and findex < n then
+         c = matched_clients[findex+1]
+      end
+      local ctags = c:tags()
+      if #ctags == 0 then
+         -- ctags is empty, show client on current tag
+         local curtag = awful.tag.selected()
+         awful.client.movetotag(curtag, c)
+      else
+         -- Otherwise, pop to first tag client is visible on
+         awful.tag.viewonly(ctags[1])
+      end
+      -- And then focus the client
+      client.focus = c
+      c:raise()
+      return
+   end
+   awful.util.spawn(cmd)
+end
+
+-- Returns true if all pairs in table1 are present in table2
+function match (table1, table2)
+   for k, v in pairs(table1) do
+      if table2[k] ~= v and not table2[k]:find(v) then
+         return false
+      end
+   end
+   return true
+end
