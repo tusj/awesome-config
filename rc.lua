@@ -40,32 +40,24 @@ do
 		in_error = false
 end)
 end
--- }}}
 
--- {{{ Variable definitions
+-- Variable definitions
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init("/usr/share/awesome/themes/default/theme.lua")
-
--- after beatuiful, init revelation
-revelation.init()
+revelation.init() -- after beatuiful.init(), init revelation
 
 -- to change wallpaper randomly
-theme.wallpaper =  "/usr/share/backgrounds/hawaii/Arancio.jpg"
-wp_path = "/usr/share/backgrounds/hawaii/" -- has to end with /
-wp_timeout  = 3600 -- seconds interval to change wallpaper
+theme.wallpaper = "/usr/share/backgrounds/hawaii/Arancio.jpg"
+wp_path         = "/usr/share/backgrounds/hawaii/" -- has to end with /
+wp_timeout      = 3600 -- seconds interval to change wallpaper
 
 -- This is used later as the default terminal and editor to run.
-terminal = "terminology"
+terminal    = "terminology"
 filemanager = "nautilus"
-webbrowser = "chromium"
-editor = "vim"
-editor_cmd = terminal .. " -e " .. editor
+webbrowser  = "chromium"
+editor      = "vim"
+editor_cmd  = terminal .. " -e " .. editor
 
--- Default modkey.
--- Usually, Mod4 is the key with a logo between Control and Alt.
--- If you do not like this or do not have such a key,
--- I suggest you to remap Mod4 to another key using xmodmap or other tools.
--- However, you can use another modifier like Mod1, but it may interact with others.
 modkey = "Mod4"
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
@@ -76,7 +68,7 @@ local layouts =
 	-- awful.layout.suit.tile.left,
 	-- awful.layout.suit.tile.bottom,
 	-- awful.layout.suit.tile.top,
-	-- awful.layout.suit.fair,
+	awful.layout.suit.fair,
 	-- awful.layout.suit.fair.horizontal,
 	-- awful.layout.suit.spiral,
 	-- awful.layout.suit.spiral.dwindle,
@@ -90,10 +82,9 @@ local layouts =
 widget_rounded_size = 0.3
 widget_height       = 20
 widget_width        = 25
-bar_height          = "20"
-
+bar_height          = 20
+focus_color         = "#88aa00ff"
 launcher_icon       = "/home/s/Dropbox/icons/hval.svg"
--- launcher_icon    = "beautiful.awesome_icon"
 
 -- Wallpaper
 if beautiful.wallpaper then
@@ -115,23 +106,23 @@ end
 -- {{{ Menu
 -- Create a laucher widget and a main menu
 myawesomemenu = {
-	{ "manual", terminal .. " -e man awesome" },
-	{ "edit config", editor_cmd .. " " .. awesome.conffile },
-	{ "restart", awesome.restart },
-	{ "quit", awesome.quit }
+	{ "manual"      , terminal .. " -e man awesome" }         ,
+	{ "edit config" , editor_cmd .. " " .. awesome.conffile } ,
+	{ "restart"     , awesome.restart }                       ,
+	{ "quit"        , awesome.quit }
 }
 
 mymainmenu = awful.menu({ items = {
-	{ "awesome", myawesomemenu, launcher_icon },
-	{ "open terminal", terminal }}
+	{ "awesome"       , myawesomemenu , launcher_icon } ,
+	{ "open terminal" , terminal }}
 })
 
 mylauncher = awful.widget.launcher({ image = launcher_icon,
 menu = mymainmenu })
 
 -- Menubar configuration
-menubar.app_folders = { "/usr/share/applications/", "/home/s/.local/share/applications/" }
-menubar.cache_entries = true
+menubar.app_folders    = { "/usr/share/applications/", "/home/s/.local/share/applications/" }
+menubar.cache_entries  = true
 menubar.utils.terminal = terminal -- Set the terminal for applications that require it
 -- }}}
 --
@@ -140,18 +131,18 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 mytextclock = awful.widget.textclock("%a %b %d")
 
 -- Create a wibox for each screen and add it
-mywibox = {}
+mywibox     = {}
 mypromptbox = {}
 mylayoutbox = {}
-mytaglist = {}
-mytag = {}
+mytaglist   = {}
+mytag       = {}
 mytaglist.buttons = awful.util.table.join(
-	awful.button({ }, 1, awful.tag.viewonly),
-	awful.button({ modkey }, 1, awful.client.movetotag),
-	awful.button({ }, 3, awful.tag.viewtoggle),
-	awful.button({ modkey }, 3, awful.client.toggletag),
-	awful.button({ }, 4, function(t) awful.tag.viewnext(awful.tag.getscreen(t)) end),
-	awful.button({ }, 5, function(t) awful.tag.viewprev(awful.tag.getscreen(t)) end)
+	awful.button({        } , 1, awful.tag.viewonly),
+	awful.button({ modkey } , 1, awful.client.movetotag),
+	awful.button({        } , 3, awful.tag.viewtoggle),
+	awful.button({ modkey } , 3, awful.client.toggletag),
+	awful.button({        } , 4, function(t) awful.tag.viewnext(awful.tag.getscreen(t)) end),
+	awful.button({        } , 5, function(t) awful.tag.viewprev(awful.tag.getscreen(t)) end)
 )
 mytasklist = {}
 mytasklist.buttons = awful.util.table.join(
@@ -202,24 +193,24 @@ for s = 1, screen.count() do
                            awful.button({ }, 4, function () awful.layout.inc(layouts, 1) end),
                            awful.button({ }, 5, function () awful.layout.inc(layouts, -1) end)))
     -- Create a taglist widget
-    -- mytaglist[s] = awful.widget.taglist(s, awful.widget.taglist.filter.all, mytaglist.buttons)
-	mytag[s] = blingbling.tagslist(s, awful.widget.taglist.filter.all, mytaglist.buttons) -- [[, { normal = {}, focus = {}, urgent = {})
+    mytag[s] = awful.widget.taglist(s, awful.widget.taglist.filter.all, mytaglist.buttons)
+	-- mytag[s] = blingbling.tagslist(s, awful.widget.taglist.filter.all, mytaglist.buttons) -- [[, { normal = {}, focus = {}, urgent = {})
 
     -- Create a tasklist widget
     mytasklist[s] = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, mytasklist.buttons)
 
 	-- Keyboard map indicator and changer
-	kbdcfg = {}
-	kbdcfg.cmd = "setxkbmap"
-	kbdcfg.layout = { { "us", "" }, { "no", "" }, {"fr", ""} }
+	kbdcfg         = {}
+	kbdcfg.cmd     = "setxkbmap"
+	kbdcfg.layout  = { { "us", "" }, { "no", "" }, {"fr", ""} }
 	kbdcfg.current = 1  -- us is our default layout
-	kbdcfg.widget = wibox.widget.textbox()
+	kbdcfg.widget  = wibox.widget.textbox()
 	kbdcfg.widget:set_text(" " .. kbdcfg.layout[kbdcfg.current][1] .. " ")
-	kbdcfg.switch = function ()
-	kbdcfg.current = kbdcfg.current % #(kbdcfg.layout) + 1
-	local t = kbdcfg.layout[kbdcfg.current]
-	kbdcfg.widget:set_text(" " .. t[1] .. " ")
-	os.execute( kbdcfg.cmd .. " " .. t[1] .. " " .. t[2] )
+	kbdcfg.switch  = function ()
+		kbdcfg.current = kbdcfg.current % #(kbdcfg.layout) + 1
+		local t        = kbdcfg.layout[kbdcfg.current]
+		kbdcfg.widget:set_text(" " .. t[1] .. " ")
+		os.execute( kbdcfg.cmd .. " " .. t[1] .. " " .. t[2] )
 	end
 
 	-- Mouse bindings
@@ -227,62 +218,22 @@ for s = 1, screen.count() do
 	awful.util.table.join(awful.button({ }, 1, function () kbdcfg.switch() end))
 	)
 	-- Memory
-	memwidget = blingbling.wlourf_circle_graph({
-		radius = widget_width / 4,
-		height = widget_height,
-		width = widget_width,
+	memwidget     = blingbling.wlourf_circle_graph({
 		show_text = true,
-		-- radius = 5, height = 18, width = 36, show_text = true,
-		label = "",
-		h_margin = 1,
-		v_margin = 1 })
-	memwidget:set_graph_colors({{"#88aa00ff", 0},
-		{"#d4aa00ff", 0.5},
-		{"#d45500ff", 0.77}})
+		label     = "",
+		h_margin  = 1,
+		v_margin  = 1 })
+	memwidget:set_graph_colors({{focus_color, 0}})
 
 	vicious.register(memwidget, vicious.widgets.mem, '$1', 5)
 
-	-- Initialize widget
-	-- memwidgetgraph = awful.widget.progressbar()
-	-- -- Progressbar properties
-	-- memwidgetgraph:set_width(20)
-	-- memwidgetgraph:set_height(10)
-	-- memwidgetgraph:set_vertical(true)
-	-- memwidgetgraph:set_background_color("#494B4F")
-	-- memwidgetgraph:set_border_color(nil)
-	-- memwidgetgraph:set_color({ type = "linear", from = { 0, 0 }, to = { 10,0 }, stops = { {0, "#AECF96"}, {0.5, "#88A175"},
-	-- 					{1, "#FF5656"}}})
-	-- -- Register widget
-	-- vicious.register(memwidgetgraph, vicious.widgets.mem, "$1", 13)
-
-	-- Initialize widget
-	-- memwidget = wibox.widget.textbox()
-	-- Register widget
-	-- vicious.register(memwidget, vicious.widgets.mem, "$1%", 13)
-
 	-- CPU
-	-- blingbling type
-	cpuwidget = blingbling.line_graph({ height = widget_height,
-		width = widget_width,
-		show_text = false,
-		rounded_size = widget_rounded_size,
-		graph_background_color = "#00000033" })
-
-	-- cpuwidget = blingbling.progress_graph( { height = widget_height,
-	-- 	width = widget_width,
-	-- 	rounded_size = widget_rounded_size
-	-- })
+	cpuwidget                  = blingbling.line_graph({
+		width                  = widget_width,
+		height                 = 20,
+		rounded_size           = 0.3,
+		graph_background_color = "#77777766" })
 	vicious.register(cpuwidget, vicious.widgets.cpu, '$1', 1)
-	-- awful type
-	-- -- Initialize widget
-	-- cpuwidget = awful.widget.graph()
-	-- -- Graph properties
-	-- cpuwidget:set_width(20)
-	-- cpuwidget:set_background_color("#494B4F")
-	-- cpuwidget:set_color({ type = "linear", from = { 0, 0 }, to = { 10,0 }, stops = { {0, "#FF5656"}, {0.5, "#88A175"},
-	-- 					{1, "#AECF96" }}})
-	-- -- Register widget
-	-- vicious.register(cpuwidget, vicious.widgets.cpu, "$1")
 
 
 	-- MPD
@@ -299,33 +250,31 @@ for s = 1, screen.count() do
 		end, 10)
 
     -- Create the wibox
-    mywibox[s] = awful.wibox({ position = "top", height = bar_height, screen = s })
+	mywibox[s] = awful.wibox({ position = "top", height = bar_height, screen = s })
 
-    -- Widgets that are aligned to the left
-    local left_layout = wibox.layout.fixed.horizontal()
-    left_layout:add(mylauncher)
-    -- left_layout:add(mytaglist[s])
-    left_layout:add(wibox.layout.margin(mytag[s], 0, 0, 1, 1))
-    left_layout:add(mypromptbox[s])
+	-- Widgets that are aligned to the left
+	local left_layout = wibox.layout.fixed.horizontal()
+	left_layout:add(mylauncher)
+	left_layout:add(mytag[s])
+	left_layout:add(mypromptbox[s])
 
-    -- Widgets that are aligned to the right
-    local right_layout = wibox.layout.fixed.horizontal()
-    if s == 1 then right_layout:add(wibox.widget.systray()) end
-	-- right_layout:add(kbdcfg.widget)
-    -- right_layout:add(mpdwidget)
+	-- Widgets that are aligned to the right
+	local right_layout = wibox.layout.fixed.horizontal()
+	if s == 1 then
+		right_layout:add(wibox.widget.systray())
+	end
 	right_layout:add(memwidget)
-	-- right_layout:add(memwidgetgraph)
-    right_layout:add(mytextclock)
-    right_layout:add(cpuwidget)
-    right_layout:add(mylayoutbox[s])
+	right_layout:add(mytextclock)
+	right_layout:add(cpuwidget)
+	right_layout:add(mylayoutbox[s])
 
-    -- Now bring it all together (with the tasklist in the middle)
-    local layout = wibox.layout.align.horizontal()
-    layout:set_left(left_layout)
-    layout:set_middle(mytasklist[s])
-    layout:set_right(right_layout)
+	-- Now bring it all together (with the tasklist in the middle)
+	local layout = wibox.layout.align.horizontal()
+	layout:set_left(left_layout)
+	layout:set_middle(mytasklist[s])
+	layout:set_right(right_layout)
 
-    mywibox[s]:set_widget(layout)
+	mywibox[s]:set_widget(wibox.layout.margin(layout, 2, 2, 2, 2))
 end
 -- }}}
 
