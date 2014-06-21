@@ -44,6 +44,7 @@ end
 -- Variable definitions
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init("/usr/share/awesome/themes/default/theme.lua")
+beautiful.init("/home/s/.config/awesome/theme.lua")
 revelation.init() -- after beatuiful.init(), init revelation
 
 -- to change wallpaper randomly
@@ -80,10 +81,10 @@ local layouts =
 
 -- Display
 widget_rounded_size = 0.3
-widget_width        = 25
 bar_height          = 33
-margin              = bar_height / 15
-focus_color         = "#88aa00ff"
+margin              = bar_height / 20
+widget_width        = bar_height - 2 * margin
+widget_height       = widget_width
 launcher_icon       = "/home/s/Dropbox/icons/hval.svg"
 
 -- Wallpaper
@@ -223,12 +224,12 @@ for s = 1, screen.count() do
 	-- Memory
 	memwidget     = blingbling.wlourf_circle_graph({
 		show_text = true,
-		radius    = (bar_height - 2 * margin) / 3,
-		label     = ""})
-		-- height    = bar_height - 4 * margin})
-		-- h_margin  = margin,
-		-- v_margin  = margin })
-	memwidget:set_graph_colors({{focus_color, 0}})
+		radius    = widget_width / 3,
+		-- height    = 20,
+		show_text = true,
+		label     = "",
+		height    = widget_height})
+	memwidget:set_graph_color(beautiful.bg_widget)
 
 	vicious.register(memwidget, vicious.widgets.mem, '$1', 5)
 
@@ -237,7 +238,9 @@ for s = 1, screen.count() do
 		width                  = widget_width,
 		height                 = bar_height - margin * 2,
 		rounded_size           = 0.3,
-		graph_background_color = "#77777766" })
+		graph_background_color = beautiful.bg_minimize,
+		graph_color            = beautiful.bg_widget,
+		graph_line_color       = beautiful.fg_widget})
 	vicious.register(cpuwidget, vicious.widgets.cpu, '$1', 1)
 
 
@@ -275,11 +278,10 @@ for s = 1, screen.count() do
 
 	-- Now bring it all together (with the tasklist in the middle)
 	local layout = wibox.layout.align.horizontal()
-	layout:set_left(wibox.layout.margin(left_layout, 2, 2, 0, 0))
-	layout:set_middle(wibox.layout.margin(mytasklist[s], 2, 2, 0, 0))
-	layout:set_right(wibox.layout.margin(right_layout, 2, 2, 0, 0))
-
-	mywibox[s]:set_widget(wibox.layout.margin(layout, 2, 2, 2, 2))
+	layout:set_left(wibox.layout.margin(left_layout, 0, 0, margin, margin))
+	layout:set_middle(wibox.layout.margin(mytasklist[s], 0, 0, margin, margin))
+	layout:set_right(wibox.layout.margin(right_layout, 0, 0, margin, margin))
+	mywibox[s]:set_widget(wibox.layout.margin(layout, 0, 0, margin, margin))
 end
 
 -- Mouse bindings
@@ -394,6 +396,15 @@ clientkeys = awful.util.table.join(
 		function (c)
 			c.maximized_horizontal = not c.maximized_horizontal
 			c.maximized_vertical   = not c.maximized_vertical
+
+			-- Remove border from windows that are maximized in both
+			-- directions, and then re-add the default theme border when
+			-- the window is restored.
+			if c.maximized_vertical and c.maximized_horizontal then
+				c.border_width = 0
+			else
+				c.border_width = beautiful.border_width
+			end
 		end)
 )
 
