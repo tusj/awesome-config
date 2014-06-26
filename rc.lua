@@ -278,10 +278,10 @@ for s = 1, screen.count() do
 
 	-- Now bring it all together (with the tasklist in the middle)
 	local layout = wibox.layout.align.horizontal()
-	layout:set_left(wibox.layout.margin(left_layout, 0, 0, margin, margin))
-	layout:set_middle(wibox.layout.margin(mytasklist[s], 0, 0, margin, margin))
-	layout:set_right(wibox.layout.margin(right_layout, 0, 0, margin, margin))
-	mywibox[s]:set_widget(wibox.layout.margin(layout, 0, 0, margin, margin))
+	layout:set_left(wibox.layout.margin(left_layout, margin, margin, margin, margin))
+	layout:set_middle(wibox.layout.margin(mytasklist[s], margin, margin, margin, margin))
+	layout:set_right(wibox.layout.margin(right_layout, margin, margin, margin, margin))
+	mywibox[s]:set_widget(wibox.layout.margin(layout, margin, margin, margin, margin))
 end
 
 -- Mouse bindings
