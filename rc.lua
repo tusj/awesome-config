@@ -80,7 +80,7 @@ local layouts =
 
 
 -- Display
-widget_rounded_size = 0.3
+widget_rounded_size = 0.8
 bar_height          = 33
 margin              = bar_height / 20
 widget_width        = bar_height - 2 * margin
@@ -272,8 +272,8 @@ for s = 1, screen.count() do
 		right_layout:add(wibox.widget.systray())
 	end
 	right_layout:add(memwidget)
-	right_layout:add(mytextclock)
 	right_layout:add(cpuwidget)
+	right_layout:add(mytextclock)
 	right_layout:add(mylayoutbox[s])
 
 	-- Now bring it all together (with the tasklist in the middle)
@@ -476,6 +476,8 @@ awful.rules.rules = {
 	{ rule = { floating = true },
 		callback = function (c) awful.placement.centered(c, nil) end ,
 		properties = { border_width = beautiful.border_width * 4 } },
+	{ rule_any = { class = { "ftjerm", "Ftjerm", "stjerm", "Stjerm" } },
+		properties = { floating = true } },
 	{ rule = { class = "Docky"   },
 		properties = { floating = true } },
 	{ rule = { class = "MPlayer" },
