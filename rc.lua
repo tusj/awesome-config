@@ -15,6 +15,18 @@ local ror                    = require("aweror")
 local blingbling             = require("blingbling")
 
 
+-- Naughty configuration
+naughty.config.padding                   = 15
+naughty.config.spacing                   = 5
+naughty.config.presets.low.bg            = beautiful.bg_focus
+naughty.config.presets.low.fg            = beautiful.fg_focus
+naughty.config.presets.normal.bg         = beautiful.bg_focus
+naughty.config.presets.normal.fg         = beautiful.fg_focus
+naughty.config.presets.critical.bg       = beautiful.bg_urgent
+naughty.config.presets.critical.fg       = beautiful.fg_urgent
+naughty.config.defaults.timeout          = 5
+naughty.config.defaults.margin           = 10
+naughty.config.defaults.hover_timeout    = 15
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -24,7 +36,6 @@ if awesome.startup_errors then
 	title = "Oops, there were errors during startup!",
 	text = awesome.startup_errors })
 end
-
 
 -- Handle runtime errors after startup
 do
@@ -61,6 +72,8 @@ editor_cmd  = terminal .. " -e " .. editor
 
 modkey = "Mod4"
 
+
+
 -- Table of layouts to cover with awful.layout.inc, order matters.
 local layouts =
 {
@@ -81,7 +94,7 @@ local layouts =
 
 -- Display
 widget_rounded_size = 0.8
-bar_height          = 33
+bar_height          = 30
 margin              = bar_height / 20
 widget_width        = bar_height - 2 * margin
 widget_height       = widget_width

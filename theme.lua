@@ -3,14 +3,13 @@
 ---------------------------
 theme = {}
 
-theme.font          = "Ubuntu, Light 13"
+theme.font          = "Ubuntu, Light 11"
 
 theme.bg_normal     = "#222222"
 theme.bg_widget     = "#43c2c7ff"
 theme.fg_widget     = "#43c2c7cc"
 theme.bg_focus      = "#42c0c688"
--- theme.bg_focus      = "#88aa0099"
-theme.bg_urgent     = "#ff4444"
+theme.bg_urgent     = "#ff6666"
 theme.bg_minimize   = "#444444"
 theme.bg_systray    = theme.bg_normal
 
