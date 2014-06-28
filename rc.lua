@@ -14,19 +14,8 @@ local revelation             = require("revelation")
 local ror                    = require("aweror")
 local blingbling             = require("blingbling")
 
-
--- Naughty configuration
-naughty.config.padding                   = 15
-naughty.config.spacing                   = 5
-naughty.config.presets.low.bg            = beautiful.bg_focus
-naughty.config.presets.low.fg            = beautiful.fg_focus
-naughty.config.presets.normal.bg         = beautiful.bg_focus
-naughty.config.presets.normal.fg         = beautiful.fg_focus
-naughty.config.presets.critical.bg       = beautiful.bg_urgent
-naughty.config.presets.critical.fg       = beautiful.fg_urgent
-naughty.config.defaults.timeout          = 5
-naughty.config.defaults.margin           = 10
-naughty.config.defaults.hover_timeout    = 15
+-- If not running under gnome
+-- os.execute("dex -a -e Awesome")
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -294,7 +283,9 @@ for s = 1, screen.count() do
 	layout:set_left(wibox.layout.margin(left_layout, margin, margin, margin, margin))
 	layout:set_middle(wibox.layout.margin(mytasklist[s], margin, margin, margin, margin))
 	layout:set_right(wibox.layout.margin(right_layout, margin, margin, margin, margin))
-	mywibox[s]:set_widget(wibox.layout.margin(layout, margin, margin, margin, margin))
+
+	-- If running with gnome panel
+	-- mywibox[s]:set_widget(wibox.layout.margin(layout, margin, margin, margin, margin))
 end
 
 -- Mouse bindings
@@ -533,8 +524,9 @@ client.connect_signal("manage", function (c, startup)
 
 		-- Put windows in a smart way, only if they does not set an initial position.
 		if not c.size_hints.user_position and not c.size_hints.program_position then
-			awful.placement.no_overlap(c)
-			awful.placement.no_offscreen(c)
+			-- awful.placement.under_mouse(c)
+			-- awful.placement.no_offscreen(c)
+			awful.placement.centered(c)
 		end
 	end
 
