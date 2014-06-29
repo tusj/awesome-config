@@ -15,7 +15,6 @@ local ror                    = require("aweror")
 local blingbling             = require("blingbling")
 
 
-os.execute("dex -a -e Awesome")
 
 
 -- {{{ Error handling
@@ -273,7 +272,7 @@ for s = 1, screen.count() do
 
     -- Create the wibox
 	-- uncommented for other panel
-	-- mywibox[s] = awful.wibox({ position = "top", height = bar_height, screen = s })
+	mywibox[s] = awful.wibox({ position = "top", height = bar_height, screen = s })
 
 	-- Widgets that are aligned to the left
 	local left_layout = wibox.layout.fixed.horizontal()
@@ -298,7 +297,7 @@ for s = 1, screen.count() do
 	layout:set_right(wibox.layout.margin(right_layout, margin, margin, margin, margin))
 
 	-- If running with gnome panel
-	-- mywibox[s]:set_widget(wibox.layout.margin(layout, margin, margin, margin, margin))
+	mywibox[s]:set_widget(wibox.layout.margin(layout, margin, margin, margin, margin))
 end
 
 -- Mouse bindings
@@ -386,14 +385,41 @@ globalkeys = awful.util.table.join(
 			awful.util.getdir("cache") .. "/history_eval")
 		end),
 		-- Menubar
-		awful.key({ modkey,           }, "p", function() menubar.show() end),
+	awful.key({ modkey,           }, "p", function() menubar.show() end),
 	awful.key({ modkey, "Control" }, "c", function() run_or_raise("chromium --app='http://calendar.google.com'", { name = "Google Kalender" }) end),
 	awful.key({ modkey, "Control" }, "g", function() run_or_raise("geary",    { name = "Geary" }) end),
 	awful.key({ modkey, "Control" }, "e", function() run_or_raise("eclipse",  { name = "Eclipse" }) end),
 	awful.key({ modkey, "Control" }, "b", function() run_or_raise("chromium", { name = "Chromium" }) end),
-	awful.key({ modkey, "Control" }, "t", function() run_or_raise(terminal,   { name = "Terminology" }) end)
-	-- awful.key({ modkey, "Shift"   }, "p", function() os.execute("synapse") end)
-	-- awful.key({ modkey, "Shift"   }, "f", function() os.execute("catfish") end)
+	awful.key({ modkey, "Control" }, "t", function() run_or_raise(terminal,   { name = "Terminology" }) end),
+	awful.key({ modkey            }, "d",
+		function()
+			awful.prompt.run({ prompt = "Dictionary lookup: " },
+				mypromptbox[mouse.screen].widget,
+				function(word)
+					local f = io.popen("dict -d wn " .. word .. " 2>&1")
+					local fr = ""
+					for line in f:lines() do
+						fr = fr .. line .. '\n'
+					end
+					f:close()
+					naughty.notify({ text = fr })
+				end, nil,
+				awful.util.getdir("cache") .. "/dict")
+		end),
+	awful.key({ modkey, "Control"   }, "p", function() os.execute("synapse") end),
+	awful.key({ modkey, "Control"   }, "f", function() os.execute("catfish") end),
+
+	awful.key({ modkey, "Control"   }, "k",
+		function()
+			awful.prompt.run({ prompt = "Calc: " },
+			mypromptbox[mouse.screen].widget,
+			function(expr)
+				local val = awful.util.eval("return " .. expr)
+
+				naughty.notify({ text = expr .. " = " .. val })
+			end, nil,
+			awful.util.getdir("cache") .. "/calc")
+		end)
 )
 
 clientkeys = awful.util.table.join(
