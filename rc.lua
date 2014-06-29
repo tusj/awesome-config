@@ -14,7 +14,8 @@ local revelation             = require("revelation")
 local ror                    = require("aweror")
 local blingbling             = require("blingbling")
 
--- os.execute("dex -a -e Awesome")
+
+os.execute("dex -a -e Awesome")
 
 
 -- {{{ Error handling
@@ -61,7 +62,18 @@ editor_cmd  = terminal .. " -e " .. editor
 
 modkey = "Mod4"
 
-
+-- Naughty configuration
+naughty.config.padding                   = 15
+naughty.config.spacing                   = 5
+naughty.config.presets.low.bg            = beautiful.bg_focus
+naughty.config.presets.low.fg            = beautiful.fg_focus
+naughty.config.presets.normal.bg         = beautiful.bg_focus
+naughty.config.presets.normal.fg         = beautiful.fg_focus
+naughty.config.presets.critical.bg       = beautiful.bg_urgent
+naughty.config.presets.critical.fg       = beautiful.fg_urgent
+naughty.config.defaults.timeout          = 5
+naughty.config.defaults.margin           = 10
+naughty.config.defaults.hover_timeout    = 15
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
 local layouts =
@@ -479,7 +491,7 @@ awful.rules.rules = {
 		keys = clientkeys,
 		buttons = clientbuttons } },
 	{ rule = { floating = true },
-		callback = function (c) awful.placement.centered(c, nil) end ,
+		callback = function (c) awful.placement.centered(c) end ,
 		properties = { border_width = beautiful.border_width * 4 } },
 	{ rule_any = { class = { "ftjerm", "Ftjerm", "stjerm", "Stjerm" } },
 		properties = { floating = true } },
