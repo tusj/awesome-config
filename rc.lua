@@ -14,8 +14,8 @@ local revelation             = require("revelation")
 local ror                    = require("aweror")
 local blingbling             = require("blingbling")
 
--- If not running under gnome
 -- os.execute("dex -a -e Awesome")
+
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
