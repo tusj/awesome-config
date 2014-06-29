@@ -64,15 +64,15 @@ modkey = "Mod4"
 -- Naughty configuration
 naughty.config.padding                   = 15
 naughty.config.spacing                   = 5
-naughty.config.presets.low.bg            = beautiful.bg_focus
+naughty.config.presets.low.bg            = beautiful.bg_focus_darker
 naughty.config.presets.low.fg            = beautiful.fg_focus
-naughty.config.presets.normal.bg         = beautiful.bg_focus
+naughty.config.presets.normal.bg         = beautiful.bg_focus_darker
 naughty.config.presets.normal.fg         = beautiful.fg_focus
 naughty.config.presets.critical.bg       = beautiful.bg_urgent
 naughty.config.presets.critical.fg       = beautiful.fg_urgent
-naughty.config.defaults.timeout          = 5
+naughty.config.defaults.timeout          = 10
 naughty.config.defaults.margin           = 10
-naughty.config.defaults.hover_timeout    = 15
+naughty.config.defaults.hover_timeout    = 1
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
 local layouts =
@@ -396,12 +396,17 @@ globalkeys = awful.util.table.join(
 			awful.prompt.run({ prompt = "Dictionary lookup: " },
 				mypromptbox[mouse.screen].widget,
 				function(word)
+					local resp = nil
+					local en = { "english", "fd-eng-fra", "fd-eng-deu" }
+					local fr = { "fd-fra-eng", "fd-fra-deu" }
+					local de = { "fd-deu-eng", "fd-deu-fra" }
 					local f = io.popen("dict -d wn " .. word .. " 2>&1")
 					local fr = ""
 					for line in f:lines() do
 						fr = fr .. line .. '\n'
 					end
 					f:close()
+					local ff = io.FI
 					naughty.notify({ text = fr })
 				end, nil,
 				awful.util.getdir("cache") .. "/dict")

@@ -9,6 +9,7 @@ theme.bg_normal     = "#222222"
 theme.bg_widget     = "#43c2c7ff"
 theme.fg_widget     = "#43c2c7cc"
 theme.bg_focus      = "#2f910f"
+theme.bg_focus_darker      = "#133b06"
 
 theme.bg_urgent     = "#ff6666"
 theme.bg_minimize   = "#444444"
