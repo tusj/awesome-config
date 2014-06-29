@@ -260,7 +260,8 @@ for s = 1, screen.count() do
 		end, 10)
 
     -- Create the wibox
-	mywibox[s] = awful.wibox({ position = "top", height = bar_height, screen = s })
+	-- uncommented for other panel
+	-- mywibox[s] = awful.wibox({ position = "top", height = bar_height, screen = s })
 
 	-- Widgets that are aligned to the left
 	local left_layout = wibox.layout.fixed.horizontal()
@@ -484,6 +485,8 @@ awful.rules.rules = {
 		properties = { floating = true } },
 	{ rule = { class = "Docky"   },
 		properties = { floating = true } },
+	{ rule_any = { class = { "xfce4-panel", "Xfce4-panel" } },
+		properties = { border_width = 0 } },
 	{ rule = { class = "MPlayer" },
 		properties = { floating = true } },
 	{ rule_any = { class = { "yakuake", "Yakuake" } },
