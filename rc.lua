@@ -413,12 +413,17 @@ globalkeys = awful.util.table.join(
 			for l in word:lines() do
 				text = text .. l
 			end
+
 			local lookup = io.popen("dict -d wn " .. text .. " 2>&1")
 
 			local resp = ""
 			for l in lookup:lines() do
 				resp = resp .. l .. '\n'
 			end
+
+			local file   = io.open("/home/s/words", "a")
+			file:write(text .. '\n' .. resp .. '\n')
+			file:close()
 
 			naughty.notify({ text = resp })
 
