@@ -216,24 +216,6 @@ for s = 1, screen.count() do
     -- Create a tasklist widget
     mytasklist[s] = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, mytasklist.buttons)
 
-	-- Keyboard map indicator and changer
-	kbdcfg         = {}
-	kbdcfg.cmd     = "setxkbmap"
-	kbdcfg.layout  = { { "us", "" }, { "no", "" }, {"fr", ""} }
-	kbdcfg.current = 1  -- us is our default layout
-	kbdcfg.widget  = wibox.widget.textbox()
-	kbdcfg.widget:set_text(" " .. kbdcfg.layout[kbdcfg.current][1] .. " ")
-	kbdcfg.switch  = function ()
-		kbdcfg.current = kbdcfg.current % #(kbdcfg.layout) + 1
-		local t        = kbdcfg.layout[kbdcfg.current]
-		kbdcfg.widget:set_text(" " .. t[1] .. " ")
-		os.execute( kbdcfg.cmd .. " " .. t[1] .. " " .. t[2] )
-	end
-
-	-- Mouse bindings
-	kbdcfg.widget:buttons(
-	awful.util.table.join(awful.button({ }, 1, function () kbdcfg.switch() end))
-	)
 	-- Memory
 	memwidget     = blingbling.wlourf_circle_graph({
 		show_text = true,
@@ -244,22 +226,29 @@ for s = 1, screen.count() do
 	})
 	memwidget:set_graph_color(beautiful.fg_widget)
 
+
 	vicious.register(memwidget, vicious.widgets.mem, '$1', 5)
 
 	-- CPU
 	cpuwidget                  = blingbling.line_graph({
 		width                  = widget_width,
 		height                 = widget_height - 2,
-		rounded_size           = widget_rounded_size,
-		graph_background_color = beautiful.bg_widget,
+		rounded_size           = 0,
+		graph_background_color = "#ffffff00",
+		-- graph_background_color = beautiful.bg_widget,
 		graph_color            = beautiful.bg_focus_widget,
 		graph_line_color       = beautiful.border_focus_widget
 	})
 	vicious.register(cpuwidget, vicious.widgets.cpu, '$1', 1)
 
 	-- NET
-	netwidget = blingbling.net({interface = "wlp12s0", show_text = true})
-	blingbling.popups.htop(cpuwidget, { terminal =  terminal })
+	netwidget = blingbling.net({
+		graph_color           = beautiful.bg_focus_widget,
+		graph_line_color      = beautiful.border_focus_widget,
+		text_background_color = "#ffffff00",
+		interface             = "wlp12s0",
+		show_text             = true,
+	})
 
 
 	-- MPD
