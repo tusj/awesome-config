@@ -17,7 +17,7 @@ local blingbling             = require("blingbling")
 
 
 
--- {{{ Error handling
+-- Error handling
 -- Check if awesome encountered an error during startup and fell back to
 -- another config (This code will only ever execute for the fallback config)
 if awesome.startup_errors then
@@ -98,7 +98,7 @@ bar_height          = 30
 margin              = bar_height / 20
 widget_width        = bar_height - 2 * margin
 widget_height       = widget_width
-launcher_icon       = "/home/s/Dropbox/icons/skilpadde.svg"
+launcher_icon       = "/home/s/Dropbox/icons/skilpadde-3.png"
 
 -- Wallpaper
 if beautiful.wallpaper then
@@ -108,16 +108,21 @@ if beautiful.wallpaper then
 end
 
 
--- {{{ Tags
+-- Menubar configuration
+menubar.menu_gen.all_menu_dirs = {"/home/s/.local/share/applications/", "/usr/share/applications/" }
+menubar.utils.terminal         = terminal -- Set the terminal for applications that require it
+menubar.geometry               = {
+	height = 30
+}
+-- Tags
 -- Define a tag table which hold all screen tags.
 tags = {}
 for s = 1, screen.count() do
 	-- Each screen has its own tag table.
 	tags[s] = awful.tag({ "web", "prg", "chat", "mail", "music", 6, 7, 8, 9 }, s, layouts[1])
 end
--- }}}
 
--- {{{ Menu
+-- Menu
 -- Create a laucher widget and a main menu
 myawesomemenu = {
 	{ "manual"      , terminal .. " -e man awesome" }         ,
@@ -136,10 +141,6 @@ mylauncher = awful.widget.launcher({
 	menu = mymainmenu
 })
 
--- Menubar configuration
-menubar.app_folders    = { "/usr/share/applications/", "/home/s/.local/share/applications/" }
-menubar.cache_entries  = true
-menubar.utils.terminal = terminal -- Set the terminal for applications that require it
 
 --  Wibox
 -- Create a textclock widget
@@ -256,6 +257,10 @@ for s = 1, screen.count() do
 	})
 	vicious.register(cpuwidget, vicious.widgets.cpu, '$1', 1)
 
+	-- NET
+	netwidget = blingbling.net({interface = "wlp12s0", show_text = true})
+	blingbling.popups.htop(cpuwidget, { terminal =  terminal })
+
 
 	-- MPD
 	-- Initialize widget
@@ -287,6 +292,7 @@ for s = 1, screen.count() do
 	end
 	right_layout:add(memwidget)
 	right_layout:add(cpuwidget)
+	right_layout:add(netwidget)
 	right_layout:add(mytextclock)
 	right_layout:add(mylayoutbox[s])
 
@@ -467,7 +473,7 @@ clientkeys = awful.util.table.join(
 			-- Remove border from windows that are maximized in both
 			-- directions, and then re-add the default theme border when
 			-- the window is restored.
-			if c.maximized_vertical and c.maximized_horizontal then
+			if c.maximized then
 				c.border_width = 0
 			else
 				c.border_width = beautiful.border_width
@@ -522,7 +528,11 @@ end
 
 clientbuttons = awful.util.table.join(
 	awful.button({ }, 1, function (c) client.focus = c; c:raise() end),
-	awful.button({ modkey }, 1, awful.mouse.client.move),
+	awful.button({ modkey }, 1,
+		function(c)
+			c.maximized = false
+			awful.mouse.client.move(c)
+		end),
 	awful.button({ modkey }, 3, awful.mouse.client.resize)
 )
 
@@ -533,42 +543,82 @@ root.keys(globalkeys)
 -- Rules to apply to new clients (through the "manage" signal).
 awful.rules.rules = {
 	-- All clients will match this rule.
-	{ rule = { },
-		properties = { border_width = beautiful.border_width,
-		border_color = beautiful.border_normal,
-		focus = awful.client.focus.filter,
-		raise = true,
-		keys = clientkeys,
-		buttons = clientbuttons } },
-	{ rule = { floating = true },
-		callback = function (c) awful.placement.centered(c) end ,
-		properties = { border_width = beautiful.border_width * 4 } },
-	{ rule_any = { class = { "ftjerm", "Ftjerm", "stjerm", "Stjerm" } },
-		properties = { floating = true } },
-	{ rule = { class = "Docky"   },
-		properties = { floating = true } },
-	{ rule_any = { class = { "xfce4-panel", "Xfce4-panel" } },
-		properties = { border_width = 0 } },
-	{ rule = { class = "MPlayer" },
-		properties = { floating = true } },
-	{ rule_any = { class = { "yakuake", "Yakuake" } },
-		properties = { floating = true } },
-	{ rule = { class = "pinentry" },
-		properties = { floating = true } },
-	{ rule = { class = "gimp" },
-		properties = { floating = true } },
-	{ rule_any = { class = { "eclipse", "Eclipse", "dartium", "Dartium" } },
-		properties = { tag = tags[1][2],
-		layout = awful.layout.suit.max } },
-	{ rule_any = { class = { "skype", "Skype", "smuxi", "Smuxi", "hexchat", "Hexchat" } },
-		properties = { tag = tags[1][3] } },
-	{ rule_any = { class = { "geary", "Geary" } },
-		properties = { tag = tags[1][4] } },
-	{ rule_any = { class = { "gmpc", "Gmpc", "sonata", "Sonata" } },
-		properties = { tag = tags[1][5] } }
-	-- Set Firefox to always map on tags number 2 of screen 1.
-	-- { rule = { class = "Firefox" },
-	--   properties = { tag = tags[1][2] } },
+	{
+		rule = { },
+		properties = {
+			border_width = beautiful.border_width,
+			border_color = beautiful.border_normal,
+			focus        = awful.client.focus.filter,
+			raise        = true,
+			keys         = clientkeys,
+			buttons      = clientbuttons
+		}
+	}, {
+		rule_any = { class = {
+			"ftjerm"                        , "Ftjerm"                        ,
+			"stjerm"                        , "Stjerm"                        ,
+			"docky"                         , "Docky"                         ,
+			"xfce4-panel"                   , "Xfce4-panel"                   ,
+			"mplayer"                       , "MPlayer"                       ,
+			"yakuake"                       , "Yakuake"                       ,
+			"pinentry"                      , "Pinentry"                      ,
+			"gimp"                          , "Gimp"                          ,
+			"sushi-start"                   , "Sushi-start"                   ,
+			"gloobus-preview"               , "Gloobus-preview"               ,
+			"gloobus-preview-configuration" , "Gloobus-preview-configuration"
+		} },
+		properties = {
+			floating     = true ,
+			border_width = 0
+		}
+	}, {
+		rule_any = { class = {
+			"chromium", "Chromium"
+		} },
+		properties = {
+			maximized = false
+		}
+	}, {
+		rule_any = { class = {
+			"meld", "Meld",
+			"eclipse", "Eclipse",
+			"dartium", "Dartium"
+		} },
+		properties = {
+			layout = awful.layout.suit.max
+		}
+	}, {
+		rule_any = { class = {
+			"eclipse", "Eclipse",
+			"dartium", "Dartium"
+		} },
+		properties = {
+			tag = tags[1][2],
+		}
+	}, {
+		rule_any = { class = {
+			"skype"   , "Skype"   ,
+			"smuxi"   , "Smuxi"   ,
+			"hexchat" , "Hexchat"
+		} },
+		properties = {
+			tag = tags[1][3]
+		}
+	}, {
+		rule_any = { class = {
+			"geary", "Geary"
+		} },
+		properties = {
+			tag = tags[1][4]
+		}
+	}, {
+		rule_any = { class = {
+			"gmpc", "Gmpc", "sonata", "Sonata"
+		} },
+		properties = {
+			tag = tags[1][5]
+		}
+	}
 }
 
 -- Signals
@@ -641,21 +691,53 @@ client.connect_signal("manage", function (c, startup)
 	end
 end)
 
-client.connect_signal("focus", function(c)
+function single_client_on_tag()
 	local current_tag = tags[mouse.screen][awful.tag.getidx()]
+	return #current_tag:clients() == 1
+end
+
+function is_single_layout()
 	local layoutname = awful.layout.getname(awful.layout.get(mouse.screen))
+	if     layoutname == "max"
+		or layoutname == "full" then
+		return true
+	end
+	return false
+end
+
+
+function on_client_focus(c)
 	if c.maximized_horizontal == true and c.maximized_vertical == true
-	or #current_tag:clients() == 1
-	or layoutname == "max"
-	or layoutname == "full" then
+	or single_client_on_tag()
+	or is_single_layout() then
 		c.border_width = 0
 	else
 		c.border_width = beautiful.border_width
 	end
+
 	c.border_color = beautiful.border_focus
-end)
+end
+client.connect_signal("focus", on_client_focus)
 
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
+
+client.connect_signal("unmanage", function(c)
+		local next = awful.client.next(1)
+		if next and
+		   next == awful.client.next(1) then
+			next.border_width = 0
+		end
+	end)
+
+tag.connect_signal("property::layout",
+	function(t)
+		local layoutname = awful.layout.getname(awful.layout.get(mouse.screen))
+		if layoutname == "max" or layoutname == "full" then
+			local c = client.focus
+			c.border_width = 0
+		end
+	end)
+
 
 -- scan directory, and optionally filter outputs
 function scandir(directory, filter)
