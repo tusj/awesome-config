@@ -321,8 +321,7 @@ globalkeys = awful.util.table.join(
 			if client.focus then client.focus:raise() end
 		end),
 
-	-- Scratchdrop
-	awful.key({ modkey            }, "F12", function () scratch.drop(terminal, "bottom") end),
+	awful.key({ modkey            }, "q", function () scratch.drop(terminal, "top") end),
 
 	-- XKB
 	awful.key({ modkey            }, "i", function() kbdcfg.switch() end),
