@@ -6,10 +6,10 @@ theme = {}
 theme.font          = "Ubuntu, Light 11"
 
 theme.bg_normal     = "#222222"
-theme.bg_widget     = "#43c2c7ff"
-theme.fg_widget     = "#43c2c7cc"
 theme.bg_focus      = "#3e732d"
 theme.bg_focus_darker      = "#133b06"
+theme.bg_focus_widget      = "#3e732dff"
+theme.bg_widget     = "#444444ff" -- has to define alpha as bling bling requires it
 
 theme.bg_urgent     = "#ff6666"
 theme.bg_minimize   = "#444444"
@@ -19,11 +19,13 @@ theme.fg_normal     = "#aaaaaa"
 theme.fg_focus      = "#ffffff"
 theme.fg_urgent     = "#ffffff"
 theme.fg_minimize   = "#ffffff"
+theme.fg_widget     = "#33cc00ff"
 
 theme.border_width  = 1
 theme.border_normal = "#000000"
 theme.border_focus  = "#33cc00"
 theme.border_marked = "#91231c"
+theme.border_focus_widget  = "#33cc00ff"
 
 -- There are other variable sets
 -- overriding the default one when

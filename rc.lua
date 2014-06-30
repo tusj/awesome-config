@@ -93,12 +93,12 @@ local layouts =
 
 
 -- Display
-widget_rounded_size = 0.9
+widget_rounded_size = 0.2
 bar_height          = 30
 margin              = bar_height / 20
 widget_width        = bar_height - 2 * margin
 widget_height       = widget_width
-launcher_icon       = "/home/s/Dropbox/icons/hval.svg"
+launcher_icon       = "/home/s/Dropbox/icons/skilpadde.svg"
 
 -- Wallpaper
 if beautiful.wallpaper then
@@ -211,7 +211,6 @@ for s = 1, screen.count() do
 
     -- Create a taglist widget
     mytag[s] = awful.widget.taglist(s, awful.widget.taglist.filter.all, mytaglist.buttons)
-	-- mytag[s] = blingbling.tagslist(s, awful.widget.taglist.filter.all, mytaglist.buttons) -- [[, { normal = {}, focus = {}, urgent = {})
 
     -- Create a tasklist widget
     mytasklist[s] = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, mytasklist.buttons)
@@ -237,13 +236,12 @@ for s = 1, screen.count() do
 	-- Memory
 	memwidget     = blingbling.wlourf_circle_graph({
 		show_text = true,
-		radius    = 9,
-		height    = widget_height - 2,
+		radius    = widget_width / 3,
 		show_text = true,
 		label     = "",
 		height    = widget_height
 	})
-	memwidget:set_graph_color(beautiful.bg_widget)
+	memwidget:set_graph_color(beautiful.fg_widget)
 
 	vicious.register(memwidget, vicious.widgets.mem, '$1', 5)
 
@@ -252,9 +250,9 @@ for s = 1, screen.count() do
 		width                  = widget_width,
 		height                 = widget_height - 2,
 		rounded_size           = widget_rounded_size,
-		graph_background_color = beautiful.bg_minimize,
-		graph_color            = beautiful.bg_widget,
-		graph_line_color       = beautiful.fg_widget
+		graph_background_color = beautiful.bg_widget,
+		graph_color            = beautiful.bg_focus_widget,
+		graph_line_color       = beautiful.border_focus_widget
 	})
 	vicious.register(cpuwidget, vicious.widgets.cpu, '$1', 1)
 
@@ -645,14 +643,18 @@ end)
 
 client.connect_signal("focus", function(c)
 	local current_tag = tags[mouse.screen][awful.tag.getidx()]
+	local layoutname = awful.layout.getname(awful.layout.get(mouse.screen))
 	if c.maximized_horizontal == true and c.maximized_vertical == true
-	or #current_tag:clients() == 1 then
+	or #current_tag:clients() == 1
+	or layoutname == "max"
+	or layoutname == "full" then
 		c.border_width = 0
 	else
 		c.border_width = beautiful.border_width
 	end
 	c.border_color = beautiful.border_focus
 end)
+
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 
 -- scan directory, and optionally filter outputs
