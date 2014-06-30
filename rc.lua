@@ -637,12 +637,12 @@ client.connect_signal("manage", function (c, startup)
 end)
 
 client.connect_signal("focus", function(c)
-	if c.maximized_horizontal == true and c.maximized_vertical == true then
-		c.border_width = "0"
-		c.border_color = beautiful.border_focus
+	local current_tag = tags[mouse.screen][awful.tag.getidx()]
+	if c.maximized_horizontal == true and c.maximized_vertical == true
+	or #current_tag:clients() == 1 then
+		c.border_width = 0
 	else
 		c.border_width = beautiful.border_width
-		c.border_color = beautiful.border_focus
 	end
 	c.border_color = beautiful.border_focus
 end)
