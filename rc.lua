@@ -393,23 +393,22 @@ globalkeys = awful.util.table.join(
 	awful.key({ modkey, "Control" }, "t", function() run_or_raise(terminal,   { name = "Terminology" }) end),
 	awful.key({ modkey            }, "d",
 		function()
-			awful.prompt.run({ prompt = "Dictionary lookup: " },
-				mypromptbox[mouse.screen].widget,
-				function(word)
-					local resp = nil
-					local en = { "english", "fd-eng-fra", "fd-eng-deu" }
-					local fr = { "fd-fra-eng", "fd-fra-deu" }
-					local de = { "fd-deu-eng", "fd-deu-fra" }
-					local f = io.popen("dict -d wn " .. word .. " 2>&1")
-					local fr = ""
-					for line in f:lines() do
-						fr = fr .. line .. '\n'
-					end
-					f:close()
-					local ff = io.FI
-					naughty.notify({ text = fr })
-				end, nil,
-				awful.util.getdir("cache") .. "/dict")
+			local word = io.popen("xsel -o")
+			local text = ""
+			for l in word:lines() do
+				text = text .. l
+			end
+			local lookup = io.popen("dict -d wn " .. text .. " 2>&1")
+
+			local resp = ""
+			for l in lookup:lines() do
+				resp = resp .. l .. '\n'
+			end
+
+			naughty.notify({ text = resp })
+
+			word:close()
+			lookup:close()
 		end),
 	awful.key({ modkey, "Control"   }, "p", function() os.execute("synapse") end),
 	awful.key({ modkey, "Control"   }, "f", function() os.execute("catfish") end),
