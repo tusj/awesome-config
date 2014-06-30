@@ -93,7 +93,7 @@ local layouts =
 
 
 -- Display
-widget_rounded_size = 0.8
+widget_rounded_size = 0.9
 bar_height          = 30
 margin              = bar_height / 20
 widget_width        = bar_height - 2 * margin
@@ -237,11 +237,12 @@ for s = 1, screen.count() do
 	-- Memory
 	memwidget     = blingbling.wlourf_circle_graph({
 		show_text = true,
-		radius    = widget_width / 3,
-		-- height    = 20,
+		radius    = 9,
+		height    = widget_height - 2,
 		show_text = true,
 		label     = "",
-		height    = widget_height})
+		height    = widget_height
+	})
 	memwidget:set_graph_color(beautiful.bg_widget)
 
 	vicious.register(memwidget, vicious.widgets.mem, '$1', 5)
@@ -249,11 +250,12 @@ for s = 1, screen.count() do
 	-- CPU
 	cpuwidget                  = blingbling.line_graph({
 		width                  = widget_width,
-		height                 = bar_height - margin * 2,
-		rounded_size           = 0.3,
+		height                 = widget_height - 2,
+		rounded_size           = widget_rounded_size,
 		graph_background_color = beautiful.bg_minimize,
 		graph_color            = beautiful.bg_widget,
-		graph_line_color       = beautiful.fg_widget})
+		graph_line_color       = beautiful.fg_widget
+	})
 	vicious.register(cpuwidget, vicious.widgets.cpu, '$1', 1)
 
 
