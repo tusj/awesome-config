@@ -386,11 +386,26 @@ globalkeys = awful.util.table.join(
 		end),
 		-- Menubar
 	awful.key({ modkey,           }, "p", function() menubar.show() end),
-	awful.key({ modkey, "Control" }, "c", function() run_or_raise("chromium --app='http://calendar.google.com'", { name = "Google Kalender" }) end),
-	awful.key({ modkey, "Control" }, "g", function() run_or_raise("geary",    { name = "Geary" }) end),
-	awful.key({ modkey, "Control" }, "e", function() run_or_raise("eclipse",  { name = "Eclipse" }) end),
-	awful.key({ modkey, "Control" }, "b", function() run_or_raise("chromium", { name = "Chromium" }) end),
-	awful.key({ modkey, "Control" }, "t", function() run_or_raise(terminal,   { name = "Terminology" }) end),
+	awful.key({ modkey, "Control" }, "c", function()
+		local matcher = function(c) return awful.rules.match(c, { name = "Google Kalender" }) end
+		awful.client.run_or_raise("chromium --app='http://calendar.google.com'", matcher)
+	end),
+	awful.key({ modkey, "Control" }, "g", function()
+		local matcher = function(c) return awful.rules.match(c, { name = "Geary" }) end
+		awful.client.run_or_raise("geary", matcher)
+	end),
+	awful.key({ modkey, "Control" }, "e", function()
+		local matcher = function(c) return awful.rules.match(c, { name = "Eclipse" }) end
+		awful.client.run_or_raise("eclipse", matcher)
+	end),
+	awful.key({ modkey, "Control" }, "b", function()
+		local matcher = function(c) return awful.rules.match(c, { name = "Chromium" }) end
+		awful.client.run_or_raise("chromium", matcher)
+	end),
+	awful.key({ modkey, "Control" }, "t", function()
+		local matcher = function(c) return awful.rules.match(c, { name = "Terminology" }) end
+		awful.client.run_or_raise("terminology", matcher)
+	end),
 	awful.key({ modkey            }, "d",
 		function()
 			local word = io.popen("xsel -o")
@@ -621,7 +636,16 @@ client.connect_signal("manage", function (c, startup)
 	end
 end)
 
-client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
+client.connect_signal("focus", function(c)
+	if c.maximized_horizontal == true and c.maximized_vertical == true then
+		c.border_width = "0"
+		c.border_color = beautiful.border_focus
+	else
+		c.border_width = beautiful.border_width
+		c.border_color = beautiful.border_focus
+	end
+	c.border_color = beautiful.border_focus
+end)
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 
 -- scan directory, and optionally filter outputs
@@ -669,56 +693,3 @@ end)
 -- initial start when rc.lua is first run
 wp_timer:start()
 
-
---- Spawns cmd if no client can be found matching properties
--- If such a client can be found, pop to first tag where it is visible, and give it focus
--- @param cmd the command to execute
--- @param properties a table of properties to match against clients.  Possible entries: any properties of the client object
-function run_or_raise(cmd, properties)
-	local clients = client.get()
-	local focused = awful.client.next(0)
-	local findex = 0
-	local matched_clients = {}
-	local n = 0
-	for i, c in pairs(clients) do
-		--make an array of matched clients
-		if match(properties, c) then
-			n = n + 1
-			matched_clients[n] = c
-			if c == focused then
-				findex = n
-			end
-		end
-	end
-	if n > 0 then
-		local c = matched_clients[1]
-		-- if the focused window matched switch focus to next in list
-		if 0 < findex and findex < n then
-			c = matched_clients[findex+1]
-		end
-		local ctags = c:tags()
-		if #ctags == 0 then
-			-- ctags is empty, show client on current tag
-			local curtag = awful.tag.selected()
-			awful.client.movetotag(curtag, c)
-		else
-			-- Otherwise, pop to first tag client is visible on
-			awful.tag.viewonly(ctags[1])
-		end
-		-- And then focus the client
-		client.focus = c
-		c:raise()
-		return
-	end
-	awful.util.spawn(cmd)
-end
-
--- Returns true if all pairs in table1 are present in table2
-function match (table1, table2)
-	for k, v in pairs(table1) do
-		if table2[k] ~= v and not table2[k]:find(v) then
-			return false
-		end
-	end
-	return true
-end
