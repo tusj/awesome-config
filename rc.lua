@@ -244,8 +244,7 @@ for s = 1, screen.count() do
 		height                 = widget_height,
 		rounded_size           = widget_rounded_size,
 		v_margin               = 0,
-		graph_background_color = "#1c1c1cff",
-		-- graph_background_color = beautiful.bg_widget,
+		graph_background_color = "#1c1c1c00",
 		graph_color            = beautiful.bg_focus_widget,
 		graph_line_color       = beautiful.border_focus_widget
 	})

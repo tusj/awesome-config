@@ -3,29 +3,29 @@
 ---------------------------
 theme = {}
 
-theme.font          = "Ubuntu, Light 11"
+theme.font                = "Ubuntu, Light 11"
 
-theme.bg_normal     = "#222222"
-theme.bg_focus      = "#3e732d"
-theme.bg_focus_darker      = "#133b06"
-theme.bg_focus_widget      = "#3e732dff"
-theme.bg_widget     = "#444444ff" -- has to define alpha as bling bling requires it
+theme.bg_normal           = "#222222"
+theme.bg_focus            = "#3e732d"
+theme.bg_focus_darker     = "#293624"
+theme.bg_focus_widget     = "#3e732dff"
+theme.bg_widget           = "#444444ff" -- has to define alpha as bling bling requires it
 
-theme.bg_urgent     = "#ff6666"
-theme.bg_minimize   = "#555555"
-theme.bg_systray    = theme.bg_normal
+theme.bg_urgent           = "#ff6666"
+theme.bg_minimize         = "#555555"
+theme.bg_systray          = theme.bg_normal
 
-theme.fg_normal     = "#aaaaaa"
-theme.fg_focus      = "#ffffff"
-theme.fg_urgent     = "#ffffff"
-theme.fg_minimize   = "#ffffff"
-theme.fg_widget     = "#33cc00ff"
+theme.fg_normal           = "#aaaaaa"
+theme.fg_focus            = "#ffffff"
+theme.fg_urgent           = "#ffffff"
+theme.fg_minimize         = "#ffffff"
+theme.fg_widget           = "#33cc00ff"
 
-theme.border_width  = 1
-theme.border_normal = "#000000"
-theme.border_focus  = "#33cc00"
-theme.border_marked = "#91231c"
-theme.border_focus_widget  = "#33cc00ff"
+theme.border_width        = 0
+theme.border_normal       = "#00000000"
+theme.border_focus        = "#33cc0000"
+theme.border_marked       = "#91231c00"
+theme.border_focus_widget = "#33cc0000"
 
 -- There are other variable sets
 -- overriding the default one when
