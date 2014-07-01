@@ -9,7 +9,6 @@ local beautiful              = require("beautiful") -- Theme handling library
 local naughty                = require("naughty") -- Notification library
 local menubar                = require("menubar")
 local vicious                = require("vicious")
-local scratch                = require("scratch")
 local revelation             = require("revelation")
 local ror                    = require("aweror")
 local blingbling             = require("blingbling")
@@ -330,7 +329,14 @@ globalkeys = awful.util.table.join(
 			if client.focus then client.focus:raise() end
 		end),
 
-	awful.key({ modkey            }, "q", function () scratch.drop(terminal, "top") end),
+	awful.key({ modkey,            }, "q",
+		function()
+			local p = os.execute("pgrep ftjerm")
+			if not p then
+				os.execute("ftjerm -o 70 -w 100% -h 100% -fn Mono 13 -k f11 &")
+			end
+			os.execute("ftjerm --toggle &")
+		end),
 
 	-- XKB
 	awful.key({ modkey            }, "i", function() kbdcfg.switch() end),
@@ -559,8 +565,8 @@ awful.rules.rules = {
 		}
 	}, {
 		rule_any = { class = {
-			"ftjerm"                        , "Ftjerm"                        ,
-			"stjerm"                        , "Stjerm"                        ,
+			-- "ftjerm"                        , "Ftjerm"                        ,
+			-- "stjerm"                        , "Stjerm"                        ,
 			"docky"                         , "Docky"                         ,
 			"xfce4-panel"                   , "Xfce4-panel"                   ,
 			"mplayer"                       , "MPlayer"                       ,
@@ -574,6 +580,15 @@ awful.rules.rules = {
 		properties = {
 			floating     = true ,
 			border_width = 0
+		}
+	}, {
+		rule_any = { class = {
+			"ftjerm", "Ftjerm",
+			"stjerm", "Stjerm"
+		} },
+		properties = {
+			floating = true, -- works
+			border_width = 0, -- doesn't work
 		}
 	}, {
 		rule_any = { class = {
