@@ -86,7 +86,7 @@ local tiles = {
 local layouts =
 {
 	awful.layout.suit.tile,
-	-- awful.layout.suit.floating,
+	awful.layout.suit.floating,
 	-- awful.layout.suit.tile.left,
 	awful.layout.suit.tile.bottom,
 	-- awful.layout.suit.tile.top,
@@ -101,12 +101,12 @@ local layouts =
 
 
 -- Display
-widget_rounded_size = 0.2
+widget_rounded_size = 0.1
 bar_height          = 30
 margin              = bar_height / 20
 widget_width        = bar_height - 2 * margin
 widget_height       = widget_width
-launcher_icon       = "/home/s/Dropbox/icons/skilpadde-3.png"
+launcher_icon       = "/home/s/Dropbox/icons/skilpadde-2.svg"
 
 -- Wallpaper
 if beautiful.wallpaper then
@@ -227,8 +227,9 @@ for s = 1, screen.count() do
 	-- Memory
 	memwidget     = blingbling.wlourf_circle_graph({
 		show_text = true,
-		radius    = widget_width / 3,
+		radius    = widget_height / 2 - 3,
 		show_text = true,
+		v_margin  = 0,
 		label     = "",
 		height    = widget_height
 	})
@@ -240,9 +241,10 @@ for s = 1, screen.count() do
 	-- CPU
 	cpuwidget                  = blingbling.line_graph({
 		width                  = widget_width,
-		height                 = widget_height - 2,
-		rounded_size           = 0,
-		graph_background_color = "#ffffff00",
+		height                 = widget_height,
+		rounded_size           = widget_rounded_size,
+		v_margin               = 0,
+		graph_background_color = "#1c1c1cff",
 		-- graph_background_color = beautiful.bg_widget,
 		graph_color            = beautiful.bg_focus_widget,
 		graph_line_color       = beautiful.border_focus_widget
@@ -333,16 +335,7 @@ globalkeys = awful.util.table.join(
 		function()
 			local p = os.execute("pgrep ftjerm")
 			if not p then
-<<<<<<< HEAD
 				os.execute("ftjerm -o 70 -w 100% -h 100% -fn Mono 13 -k f11 &")
-				os.execute("ftjerm -o 70 -w 90% -h 90% -fn Mono 13 -k f11 &")
-=======
-<<<<<<< HEAD
-				os.execute("ftjerm -o 70 -w 100% -h 100% -fn Mono 13 -k f11 &")
-=======
-				os.execute("ftjerm -o 70 -w 90% -h 90% -fn Mono 13 -k f11 &")
->>>>>>> 36dd65fe0d958b097b53a91ed1930e430e66e5f7
->>>>>>> 3587c58a6dd1b6e42fc5f35127a90b5586e68f17
 			end
 			os.execute("ftjerm --toggle &")
 		end),
@@ -574,30 +567,22 @@ awful.rules.rules = {
 		}
 	}, {
 		rule_any = { class = {
-			-- "ftjerm"                        , "Ftjerm"                        ,
-			-- "stjerm"                        , "Stjerm"                        ,
-			"docky"                         , "Docky"                         ,
-			"xfce4-panel"                   , "Xfce4-panel"                   ,
-			"mplayer"                       , "MPlayer"                       ,
-			"yakuake"                       , "Yakuake"                       ,
-			"pinentry"                      , "Pinentry"                      ,
-			"gimp"                          , "Gimp"                          ,
-			"sushi-start"                   , "Sushi-start"                   ,
-			"gloobus-preview"               , "Gloobus-preview"               ,
-			"gloobus-preview-configuration" , "Gloobus-preview-configuration"
+			"docky"                         , " Docky",
+			"ftjerm"                        , " Ftjerm",
+			"galculator"                    , " Galculator",
+			"gimp"                          , " Gimp",
+			"gloobus-preview"               , " Gloobus-preview",
+			"gloobus-preview-configuration" , " Gloobus-preview-configuration",
+			"mplayer"                       , " MPlayer",
+			"pinentry"                      , " Pinentry",
+			"stjerm"                        , " Stjerm",
+			"sushi-start"                   , " Sushi-start",
+			"xfce4-panel"                   , " Xfce4-panel",
+			"yakuake"                       , " Yakuake",
 		} },
 		properties = {
 			floating     = true ,
 			border_width = 0
-		}
-	}, {
-		rule_any = { class = {
-			"ftjerm", "Ftjerm",
-			"stjerm", "Stjerm"
-		} },
-		properties = {
-			floating = true, -- works
-			border_width = 0, -- doesn't work
 		}
 	}, {
 		rule_any = { class = {

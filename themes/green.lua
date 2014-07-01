@@ -12,7 +12,7 @@ theme.bg_focus_widget      = "#3e732dff"
 theme.bg_widget     = "#444444ff" -- has to define alpha as bling bling requires it
 
 theme.bg_urgent     = "#ff6666"
-theme.bg_minimize   = "#444444"
+theme.bg_minimize   = "#555555"
 theme.bg_systray    = theme.bg_normal
 
 theme.fg_normal     = "#aaaaaa"
