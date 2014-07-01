@@ -12,6 +12,7 @@ local vicious                = require("vicious")
 local revelation             = require("revelation")
 local ror                    = require("aweror")
 local blingbling             = require("blingbling")
+local util                   = require("util")
 
 
 
@@ -47,9 +48,9 @@ beautiful.init("/home/s/.config/awesome/theme.lua")
 revelation.init() -- after beatuiful.init(), init revelation
 
 -- to change wallpaper randomly
-theme.wallpaper = "/usr/share/backgrounds/hawaii/Arancio.jpg"
-wp_path         = "/usr/share/backgrounds/hawaii/" -- has to end with /
-wp_timeout      = 3600 -- seconds interval to change wallpaper
+theme.wallpaper        = "/usr/share/backgrounds/hawaii/Arancio.jpg"
+wallpaper_path         = "/usr/share/backgrounds/hawaii/" -- has to end with /
+wallpaper_timeout      = 3600 -- seconds interval to change wallpaper
 
 -- This is used later as the default terminal and editor to run.
 terminal    = "terminology"
@@ -101,12 +102,16 @@ local layouts =
 
 
 -- Display
-widget_rounded_size = 0.1
+widget_rounded_size = 0.2
 bar_height          = 30
 margin              = bar_height / 20
 widget_width        = bar_height - 2 * margin
 widget_height       = widget_width
-launcher_icon       = "/home/s/Dropbox/icons/skilpadde-2.svg"
+icon_dir            = "/home/s/Dropbox/icons"
+icon_filter = function(s) return string.match(s,"%.png$") or string.match(s,"%.jpg$") or string.match(s, "%.svg") end
+icon_files          = util.scandir(icon_dir, icon_filter)
+
+launcher_icon       = icon_dir .. '/' .. icon_files[math.random( 1, #icon_files)]
 
 -- Wallpaper
 if beautiful.wallpaper then
@@ -127,22 +132,20 @@ menubar.geometry               = {
 tags = {}
 for s = 1, screen.count() do
 	-- Each screen has its own tag table.
-	tags[s] = awful.tag({ "web", "prg", "chat", "mail", "music", 6, 7, 8, 9 }, s, layouts[1])
+	tags[s] = awful.tag({ "1 web", "2 prg", "3 chat", "4 mail", "5 music", 6, 7, 8, 9 }, s, layouts[1])
 end
 
 -- Menu
 -- Create a laucher widget and a main menu
 myawesomemenu = {
-	{ "manual"      , terminal .. " -e man awesome" }         ,
-	{ "edit config" , editor_cmd .. " " .. awesome.conffile } ,
-	{ "restart"     , awesome.restart }                       ,
-	{ "quit"        , awesome.quit }
 }
 
 mymainmenu = awful.menu({ items = {
-	{ "awesome"       , myawesomemenu , launcher_icon } ,
-	{ "open terminal" , terminal }}
-})
+	{ "edit config" , editor_cmd .. " " .. awesome.conffile },
+	{ "restart awesome"     , awesome.restart },
+	{ "logout"        , awesome.quit },
+	{ "reboot"        , "reboot" }
+}})
 
 mylauncher = awful.widget.launcher({
 	image = launcher_icon,
@@ -244,7 +247,7 @@ for s = 1, screen.count() do
 		height                 = widget_height,
 		rounded_size           = widget_rounded_size,
 		v_margin               = 0,
-		graph_background_color = "#1c1c1c00",
+		graph_background_color = "#00000022",
 		graph_color            = beautiful.bg_focus_widget,
 		graph_line_color       = beautiful.border_focus_widget
 	})
@@ -255,6 +258,7 @@ for s = 1, screen.count() do
 		graph_color           = beautiful.bg_focus_widget,
 		graph_line_color      = beautiful.border_focus_widget,
 		text_background_color = "#ffffff00",
+		text_color            = beautiful.fg_normal,
 		interface             = "wlp12s0",
 		show_text             = true,
 	})
@@ -332,9 +336,13 @@ globalkeys = awful.util.table.join(
 
 	awful.key({ modkey,            }, "q",
 		function()
+
 			local p = os.execute("pgrep ftjerm")
 			if not p then
-				os.execute("ftjerm -o 70 -w 100% -h 100% -fn Mono 13 -k f11 &")
+				success = os.execute("ftjerm -o 70 -w 100% -h 100% -fn Mono 13 &")
+				if not success then
+					naughty.notify({ text = "Could not start ftjerm" })
+				end
 			end
 			os.execute("ftjerm --toggle &")
 		end),
@@ -358,10 +366,17 @@ globalkeys = awful.util.table.join(
 				client.focus:raise()
 			end
 		end),
-	awful.key({ modkey,           }, "F2", function ()
-			awful.prompt.run({ prompt = "Rename tab: ", text = "", },
-			mypromptbox[mouse.screen].widget,
-			function (s) awful.tag.selected().name = s end)
+	awful.key({ modkey,           }, "F2",
+		function ()
+			awful.prompt.run({
+					prompt = "Rename tab: ",
+					text   = "",
+				},
+				mypromptbox[mouse.screen].widget,
+				function (s)
+					tag      = awful.tag.selected()
+					tag.name = tag.name:sub(1,2) .. s
+				end)
 		end),
 
 	-- Standard program
@@ -570,8 +585,6 @@ awful.rules.rules = {
 			"ftjerm"                        , " Ftjerm",
 			"galculator"                    , " Galculator",
 			"gimp"                          , " Gimp",
-			"gloobus-preview"               , " Gloobus-preview",
-			"gloobus-preview-configuration" , " Gloobus-preview-configuration",
 			"mplayer"                       , " MPlayer",
 			"pinentry"                      , " Pinentry",
 			"stjerm"                        , " Stjerm",
@@ -582,6 +595,15 @@ awful.rules.rules = {
 		properties = {
 			floating     = true ,
 			border_width = 0
+		}
+	}, {
+		rule_any = { class = {
+			"gloobus-preview"               , " Gloobus-preview",
+			"gloobus-preview-configuration" , " Gloobus-preview-configuration",
+		} },
+		properties = {
+			floating = true,
+			border_width = 2
 		}
 	}, {
 		rule_any = { class = {
@@ -746,53 +768,40 @@ tag.connect_signal("property::layout",
 		local layoutname = awful.layout.getname(awful.layout.get(mouse.screen))
 		if layoutname == "max" or layoutname == "full" then
 			local c = client.focus
-			c.border_width = 0
+			if c then
+				c.border_width = 0
+			end
 		end
 	end)
 
 
--- scan directory, and optionally filter outputs
-function scandir(directory, filter)
-	local i, t, popen = 0, {}, io.popen
-	if not filter then
-		filter = function(s) return true end
-	end
-	print(filter)
-	for filename in popen('ls -a "'..directory..'"'):lines() do
-		if filter(filename) then
-			i = i + 1
-			t[i] = filename
-		end
-	end
-	return t
-end
 
 
 -- configuration - edit to your liking
-wp_index  = 1
-wp_filter = function(s) return string.match(s,"%.png$") or string.match(s,"%.jpg$") end
-wp_files  = scandir(wp_path, wp_filter)
+wallpaper_filter = function(s) return string.match(s,"%.png$") or string.match(s,"%.jpg$") end
+wallpaper_files  = util.scandir(wallpaper_path, wallpaper_filter)
+wallpaper_index  =  math.random( 1, #wallpaper_files)
 
 -- setup the timer
-wp_timer = timer { timeout = wp_timeout }
-wp_timer:connect_signal("timeout", function()
+wallpaper_timer = timer { timeout = wallpaper_timeout }
+wallpaper_timer:connect_signal("timeout", function()
 
 	-- set wallpaper to current index for all screens
 	for s = 1, screen.count() do
-		gears.wallpaper.maximized(wp_path .. wp_files[wp_index], s, true)
+		gears.wallpaper.maximized(wallpaper_path .. wallpaper_files[wallpaper_index], s, true)
 	end
 
 	-- stop the timer (we don't need multiple instances running at the same time)
-	wp_timer:stop()
+	wallpaper_timer:stop()
 
 	-- get next random index
-	wp_index = math.random( 1, #wp_files)
+	wallpaper_index = math.random( 1, #wallpaper_files)
 
 	--restart the timer
-	wp_timer.timeout = wp_timeout
-	wp_timer:start()
+	wallpaper_timer.timeout = wallpaper_timeout
+	wallpaper_timer:start()
 end)
 
 -- initial start when rc.lua is first run
-wp_timer:start()
+wallpaper_timer:start()
 
