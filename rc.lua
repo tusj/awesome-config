@@ -333,8 +333,16 @@ globalkeys = awful.util.table.join(
 		function()
 			local p = os.execute("pgrep ftjerm")
 			if not p then
+<<<<<<< HEAD
 				os.execute("ftjerm -o 70 -w 100% -h 100% -fn Mono 13 -k f11 &")
 				os.execute("ftjerm -o 70 -w 90% -h 90% -fn Mono 13 -k f11 &")
+=======
+<<<<<<< HEAD
+				os.execute("ftjerm -o 70 -w 100% -h 100% -fn Mono 13 -k f11 &")
+=======
+				os.execute("ftjerm -o 70 -w 90% -h 90% -fn Mono 13 -k f11 &")
+>>>>>>> 36dd65fe0d958b097b53a91ed1930e430e66e5f7
+>>>>>>> 3587c58a6dd1b6e42fc5f35127a90b5586e68f17
 			end
 			os.execute("ftjerm --toggle &")
 		end),
