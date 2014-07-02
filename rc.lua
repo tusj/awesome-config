@@ -84,8 +84,8 @@ local tiles = {
 	-- awful.layout.suit.fair,
 	awful.layout.suit.fair.horizontal,
 }
-local layouts =
-{
+
+local layouts = {
 	awful.layout.suit.tile,
 	awful.layout.suit.floating,
 	-- awful.layout.suit.tile.left,
@@ -108,25 +108,14 @@ margin              = bar_height / 20
 widget_width        = bar_height - 2 * margin
 widget_height       = widget_width
 icon_dir            = "/home/s/Dropbox/icons"
-icon_filter = function(s) return string.match(s,"%.png$") or string.match(s,"%.jpg$") or string.match(s, "%.svg") end
+icon_filter         = function(s) return string.match(s,"%.png$") or string.match(s,"%.jpg$") or string.match(s, "%.svg") end
 icon_files          = util.scandir(icon_dir, icon_filter)
-
 launcher_icon       = icon_dir .. '/' .. icon_files[math.random( 1, #icon_files)]
-
--- Wallpaper
-if beautiful.wallpaper then
-	for s = 1, screen.count() do
-		gears.wallpaper.maximized(beautiful.wallpaper, s, true)
-	end
-end
-
 
 -- Menubar configuration
 menubar.menu_gen.all_menu_dirs = {"/home/s/.local/share/applications/", "/usr/share/applications/" }
 menubar.utils.terminal         = terminal -- Set the terminal for applications that require it
-menubar.geometry               = {
-	height = 30
-}
+menubar.geometry               = { height = bar_height * 2 }
 -- Tags
 -- Define a tag table which hold all screen tags.
 tags = {}
@@ -136,10 +125,6 @@ for s = 1, screen.count() do
 end
 
 -- Menu
--- Create a laucher widget and a main menu
-myawesomemenu = {
-}
-
 mymainmenu = awful.menu({ items = {
 	{ "edit config" , editor_cmd .. " " .. awesome.conffile },
 	{ "restart awesome"     , awesome.restart },
@@ -154,8 +139,6 @@ mylauncher = awful.widget.launcher({
 
 
 --  Wibox
--- Create a textclock widget
-mytextclock = awful.widget.textclock("%a %b %d")
 
 -- Create a wibox for each screen and add it
 mywibox     = {}
@@ -227,17 +210,18 @@ for s = 1, screen.count() do
     -- Create a tasklist widget
     mytasklist[s] = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, mytasklist.buttons)
 
+	clock = awful.widget.textclock("%a %b %d")
+
 	-- Memory
 	memwidget     = blingbling.wlourf_circle_graph({
-		show_text = true,
-		radius    = widget_height / 2 - 3,
-		show_text = true,
-		v_margin  = 0,
-		label     = "",
-		height    = widget_height
+		show_text   = true,
+		radius      = widget_height / 2 - 3,
+		show_text   = true,
+		v_margin    = 0,
+		label       = "",
+		height      = widget_height,
+		graph_color = beautiful.fg_widget
 	})
-	memwidget:set_graph_color(beautiful.fg_widget)
-
 
 	vicious.register(memwidget, vicious.widgets.mem, '$1', 5)
 
@@ -292,20 +276,21 @@ for s = 1, screen.count() do
 	if s == 1 then
 		right_layout:add(wibox.widget.systray())
 	end
+
 	right_layout:add(memwidget)
 	right_layout:add(cpuwidget)
 	right_layout:add(netwidget)
-	right_layout:add(mytextclock)
+	right_layout:add(clock)
 	right_layout:add(mylayoutbox[s])
 
 	-- Now bring it all together (with the tasklist in the middle)
 	local layout = wibox.layout.align.horizontal()
-	layout:set_left(wibox.layout.margin(left_layout, margin, margin, margin, margin))
+	layout:set_left(  wibox.layout.margin(left_layout,   margin, margin, margin, margin))
 	layout:set_middle(wibox.layout.margin(mytasklist[s], margin, margin, margin, margin))
-	layout:set_right(wibox.layout.margin(right_layout, margin, margin, margin, margin))
+	layout:set_right( wibox.layout.margin(right_layout,  margin, margin, margin, margin))
 
 	-- If running with gnome panel
-	mywibox[s]:set_widget(wibox.layout.margin(layout, margin, margin, margin, margin))
+	mywibox[s]:set_widget(wibox.layout.margin(layout,    margin, margin, margin, margin))
 end
 
 -- Mouse bindings
@@ -381,7 +366,7 @@ function cycle_tiles_backwards()
 	awful.layout.set(tiles[tile_index])
 end
 
-
+-- Run or raise
 function rr_cal()
 	local matcher = function(c) return awful.rules.match(c, { name = "Google Kalender" }) end
 	awful.client.run_or_raise("chromium --app='http://calendar.google.com'", matcher)
@@ -407,6 +392,7 @@ function rr_term()
 	awful.client.run_or_raise("terminology", matcher)
 end
 
+-- Prompts
 function prompt_lua()
 	awful.prompt.run({ prompt = "Run Lua code: " },
 	mypromptbox[mouse.screen].widget,
@@ -414,14 +400,14 @@ function prompt_lua()
 	awful.util.getdir("cache") .. "/history_eval")
 end
 
-function promt_dict()
+function prompt_dict()
 	local word = io.popen("xsel -o")
 	local text = ""
 	for l in word:lines() do
 		text = text .. l
 	end
 
-	local lookup = io.popen("dict -d wn " .. text .. " 2>&1")
+	local lookup = io.popen("dict -fd english " .. text .. " 2>&1")
 
 	local resp = ""
 	for l in lookup:lines() do
@@ -430,7 +416,9 @@ function promt_dict()
 
 	local file   = io.open("/home/s/words", "a")
 	file:write(text .. '\n' .. resp .. '\n')
-	file:close()
+
+	-- index 3 contains the return code
+	local returncode = {file:close()}
 
 	naughty.notify({ text = resp })
 
@@ -523,11 +511,11 @@ globalkeys = awful.util.table.join(
 	awful.key({ modkey, "Control" }, "f", function() os.execute("catfish") end),
 
 -- Prompts
-	awful.key({ modkey,           }, "r",       function () mypromptbox[mouse.screen]:run() end),
-	awful.key({ modkey,           }, "x",       run_lua_code),
-	awful.key({ modkey, "Control" }, "k",       prompt_calc),
-	awful.key({ modkey            }, "d",       prompt_dict),
-	awful .key({ modkey,           }, "q",      toggle_ftjerm)
+	awful.key({ modkey,           }, "r", function () mypromptbox[mouse.screen]:run() end),
+	awful.key({ modkey,           }, "x", run_lua_code),
+	awful.key({ modkey, "Control" }, "k", prompt_calc),
+	awful.key({ modkey            }, "d", prompt_dict),
+	awful.key({ modkey,           }, "q", toggle_ftjerm)
 )
 
 clientkeys = awful.util.table.join(
@@ -536,7 +524,6 @@ clientkeys = awful.util.table.join(
 	awful.key({ modkey, "Control" }, "space",  awful.client.floating.toggle                     ),
 	awful.key({ modkey, "Control" }, "Return", function (c) c:swap(awful.client.getmaster()) end),
 	awful.key({ modkey,           }, "o",      awful.client.movetoscreen                        ),
-	awful.key({ modkey,           }, "t",      function (c) c.ontop = not c.ontop            end),
 	awful.key({ modkey,           }, "y",      toggle_maximize)
 )
 
@@ -753,12 +740,32 @@ function focused_client()
 	return tags[mouse.screen][awful.tag.getidx()]:clients()[1]
 end
 
-function single_client_on_tag()
-	tag = tags[mouse.screen][awful.tag.getidx()]
-	if tag then
-		return tag:clients() == 1
+function is_empty(tag)
+	count = 0
+	for _, c in pairs(tag:clients()) do
+		-- client is used so that won't match against self
+		-- if client.class ~= c.class then
+		count = count + 1
+		-- end
 	end
-	return false
+	return count == 0
+end
+
+function single_client_on_tag()
+	-- local tag = tags[mouse.screen][awful.tag.getidx()]
+	local tag = awful.tag.selected(mouse.screen)
+	naughty.notify({text = awful.tag.getidx()})
+	naughty.notify({text = tag == nil})
+	return is_empty(tag)
+	-- local matcher = function(c)
+	-- 	naughty.notify({text = c == nil})
+	-- 	return awful.rules.match(c, {tag = tagname})
+	-- end
+	-- local i = 0
+	-- for c in awful.client.iterate(matcher, awful.tag.getidx(), mouse.screen) do
+	-- 	i = i + 1
+	-- end
+	-- return i == 1
 end
 
 function is_single_layout()
@@ -822,7 +829,9 @@ tag.connect_signal("property::layout",
 		local c = client.focus
 		toggle_border(c and is_single_layout(), c)
 	end)
-
+-- tag.connect_signal("property::selected",
+-- 	function(t)
+--
 
 
 
@@ -853,3 +862,9 @@ wallpaper_timer:connect_signal("timeout",
 
 -- initial start when rc.lua is first run
 wallpaper_timer:start()
+
+-- TODO
+-- find first available desktop
+-- name clients by letter
+-- set keybinding for applications
+-- set critical color for memory
