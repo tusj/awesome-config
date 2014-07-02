@@ -752,20 +752,12 @@ function is_empty(tag)
 end
 
 function single_client_on_tag()
-	-- local tag = tags[mouse.screen][awful.tag.getidx()]
-	local tag = awful.tag.selected(mouse.screen)
-	naughty.notify({text = awful.tag.getidx()})
-	naughty.notify({text = tag == nil})
-	return is_empty(tag)
-	-- local matcher = function(c)
-	-- 	naughty.notify({text = c == nil})
-	-- 	return awful.rules.match(c, {tag = tagname})
-	-- end
-	-- local i = 0
-	-- for c in awful.client.iterate(matcher, awful.tag.getidx(), mouse.screen) do
-	-- 	i = i + 1
-	-- end
-	-- return i == 1
+	-- There is a period where no tag is selected
+	local tag = awful.tag.getidx()
+	if not tag then
+		return false
+	end
+	return #tags[mouse.screen][tag]:clients() == 1
 end
 
 function is_single_layout()
@@ -786,7 +778,6 @@ function toggle_border(b, c)
 end
 
 
-
 function on_client_focus(c)
 	toggle_border(
 		c.maximized or
@@ -795,6 +786,7 @@ function on_client_focus(c)
 end
 client.connect_signal("focus",
 	function(c)
+		local tag = awful.tag.getidx()
 		c.border_color = beautiful.border_focus
 		on_client_focus(c)
 	end)
