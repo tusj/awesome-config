@@ -214,13 +214,18 @@ for s = 1, screen.count() do
 
 	-- Memory
 	memwidget     = blingbling.wlourf_circle_graph({
-		show_text   = true,
-		radius      = widget_height / 2 - 3,
-		show_text   = true,
-		v_margin    = 0,
-		label       = "",
-		height      = widget_height,
-		graph_color = beautiful.fg_widget
+		show_text    = true,
+		radius       = widget_height / 2 - 3,
+		show_text    = true,
+		v_margin     = 0,
+		label        = "",
+		height       = widget_height,
+		-- graph_color  = beautiful.fg_widget,
+		graph_colors = {
+			{ beautiful.fg_widget, 0 },
+			{ beautiful.fg_widget_attention, 0.60 },
+			{ beautiful.fg_widget_critical,  0.70 }
+		}
 	})
 
 	vicious.register(memwidget, vicious.widgets.mem, '$1', 5)
@@ -231,7 +236,7 @@ for s = 1, screen.count() do
 		height                 = widget_height,
 		rounded_size           = widget_rounded_size,
 		v_margin               = 0,
-		graph_background_color = "#00000022",
+		graph_background_color = beautiful.bg_widget,
 		graph_color            = beautiful.bg_focus_widget,
 		graph_line_color       = beautiful.border_focus_widget
 	})
@@ -239,12 +244,14 @@ for s = 1, screen.count() do
 
 	-- NET
 	netwidget = blingbling.net({
-		graph_color           = beautiful.bg_focus_widget,
-		graph_line_color      = beautiful.border_focus_widget,
-		text_background_color = "#ffffff00",
-		text_color            = beautiful.fg_normal,
-		interface             = "wlp12s0",
-		show_text             = true,
+		background_color       = beautiful.bg_widget,
+		graph_color            = beautiful.bg_focus_widget,
+		graph_line_color       = beautiful.border_focus_widget,
+		text_background_color  = "#ffffff00",
+		text_color             = beautiful.fg_normal,
+		interface              = "wlp12s0",
+		show_text              = true,
+		v_margin               = 0,
 	})
 
 

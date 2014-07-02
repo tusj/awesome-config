@@ -9,7 +9,7 @@ theme.bg_normal           = "#222222"
 theme.bg_focus            = "#3e732d"
 theme.bg_focus_darker     = "#293624"
 theme.bg_focus_widget     = "#3e732dff"
-theme.bg_widget           = "#444444ff" -- has to define alpha as bling bling requires it
+theme.bg_widget           = "#00000000" -- has to define alpha as bling bling requires it
 
 theme.bg_urgent           = "#ff6666"
 theme.bg_minimize         = "#555555"
@@ -20,6 +20,8 @@ theme.fg_focus            = "#ffffff"
 theme.fg_urgent           = "#ffffff"
 theme.fg_minimize         = "#ffffff"
 theme.fg_widget           = "#33cc00ff"
+theme.fg_widget_attention = "#ff9000ff"
+theme.fg_widget_critical  = "#ff3300ff"
 
 theme.border_width        = 1
 theme.border_normal       = "#000000ff"
