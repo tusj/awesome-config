@@ -764,7 +764,7 @@ end
 function is_single_layout()
 	local layoutname = awful.layout.getname(awful.layout.get(mouse.screen))
 	if     layoutname == "max"
-		or layoutname == "full" then
+		or layoutname == "fullscreen" then
 		return true
 	end
 	return false
@@ -785,7 +785,6 @@ function on_client_focus(c)
 		c.maximized or
 		single_client_on_tag() or
 		is_single_layout(), c)
-
 end
 client.connect_signal("focus",
 	function(c)
@@ -821,7 +820,7 @@ tag.connect_signal("property::layout",
 	function(t)
 		local layoutname = awful.layout.getname(awful.layout.get(mouse.screen))
 		local c = client.focus
-		toggle_border(c and (layoutname == "max" or layoutname == "full"), c)
+		toggle_border(c and is_single_layout(), c)
 	end)
 
 
