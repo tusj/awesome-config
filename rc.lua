@@ -317,165 +317,217 @@ root.buttons(awful.util.table.join(
 
 -- Key bindings
 
-globalkeys = awful.util.table.join(
-	awful.key({ modkey,               }, "Left",   awful.tag.viewprev       ),
-	awful.key({ modkey,               }, "Right",  awful.tag.viewnext       ),
-	awful.key({ modkey,               }, "Escape", awful.tag.history.restore),
-	awful.key({ modkey,               }, "e",      revelation),
-
-	awful.key({ modkey,               }, "j",
-		function ()
-			awful.client.focus.byidx( 1)
-			if client.focus then client.focus:raise() end
-		end),
-	awful.key({ modkey,               }, "k",
-		function ()
-			awful.client.focus.byidx(-1)
-			if client.focus then client.focus:raise() end
-		end),
-
-	awful.key({ modkey,            }, "q",
-		function()
-
-			local p = os.execute("pgrep ftjerm")
-			if not p then
-				success = os.execute("ftjerm -o 70 -w 100% -h 100% -fn Mono 13 &")
-				if not success then
-					naughty.notify({ text = "Could not start ftjerm" })
-				end
-			end
-			os.execute("ftjerm --toggle &")
-		end),
-
-	-- XKB
-	awful.key({ modkey            }, "i", function() kbdcfg.switch() end),
-	awful.key({ modkey, "Shift"   }, "f", function() awful.util.spawn("setxkbmap -layout fr") end),
-	awful.key({ modkey, "Shift"   }, "e", function() awful.util.spawn("setxkbmap -layout us") end),
-	awful.key({ modkey, "Shift"   }, "n", function() awful.util.spawn("setxkbmap -layout no") end),
-
-	-- Layout manipulation
-	awful.key({ modkey,               }, "h", awful.tag.viewprev ),
-	awful.key({ modkey,               }, "l", awful.tag.viewnext ),
-	awful.key({ modkey, "Control"     }, "j", function () awful.screen.focus_relative( 1) end),
-	awful.key({ modkey, "Control"     }, "k", function () awful.screen.focus_relative(-1) end),
-	awful.key({ modkey,               }, "u", awful.client.urgent.jumpto),
-	awful.key({ modkey,           }, "Tab",
-		function ()
-			awful.client.focus.history.previous()
-			if client.focus then
-				client.focus:raise()
-			end
-		end),
-	awful.key({ modkey,           }, "F2",
-		function ()
-			awful.prompt.run({
-					prompt = "Rename tab: ",
-					text   = "",
-				},
-				mypromptbox[mouse.screen].widget,
-				function (s)
-					tag      = awful.tag.selected()
-					tag.name = tag.name:sub(1,2) .. s
-				end)
-		end),
-
-	-- Standard program
-	awful.key({ modkey,           }, "Return", function () awful.util.spawn(terminal)    end),
-	awful.key({ modkey, "Shift"   }, "Return", function () awful.util.spawn(filemanager) end),
-	awful.key({ modkey,           }, "b",      function () awful.util.spawn(webbrowser)  end),
-	awful.key({ modkey, "Control" }, "r", awesome.restart),
-	awful.key({ modkey, "Shift"   }, "q", awesome.quit),
-
-	--awful.key({ modkey,           }, "l",     function () awful.tag.incmwfact( 0.05)    end),
-	--awful.key({ modkey,           }, "h",     function () awful.tag.incmwfact(-0.05)    end),
-	awful.key({ modkey, "Shift"   }, "h",     function () awful.tag.incnmaster( 1)      end),
-	awful.key({ modkey, "Shift"   }, "l",     function () awful.tag.incnmaster(-1)      end),
-	awful.key({ modkey, "Control" }, "h",     function () awful.tag.incncol( 1)         end),
-	awful.key({ modkey, "Control" }, "l",     function () awful.tag.incncol(-1)         end),
-	awful.key({ modkey,           }, "space", function () awful.layout.inc(layouts,  1) end),
-	awful.key({ modkey, "Shift"   }, "space", function () awful.layout.inc(layouts, -1) end),
-	awful.key({ modkey,           }, "m",     function () awful.layout.set(awful.layout.suit.max) end),
-	awful.key({ modkey,           }, "f",     function () awful.layout.set(awful.layout.suit.max.fullscreen) end),
-	awful.key({ modkey            }, "t",
-		function()
-			tile_index = tile_index + 1
-			if tile_index > #tiles then
-				tile_index = 1
-			end
-			awful.layout.set(tiles[tile_index])
-		end),
-	-- awful.key({ modkey, "Control" }, "n", awful.client.restore),
-
-	-- Prompt
-	awful.key({ modkey,           }, "r", function () mypromptbox[mouse.screen]:run() end),
-
-	awful.key({ modkey,           }, "x",
-		function ()
-			awful.prompt.run({ prompt = "Run Lua code: " },
-			mypromptbox[mouse.screen].widget,
-			awful.util.eval, nil,
-			awful.util.getdir("cache") .. "/history_eval")
-		end),
-		-- Menubar
-	awful.key({ modkey,           }, "p", function() menubar.show() end),
-	awful.key({ modkey, "Control" }, "c", function()
-		local matcher = function(c) return awful.rules.match(c, { name = "Google Kalender" }) end
-		awful.client.run_or_raise("chromium --app='http://calendar.google.com'", matcher)
-	end),
-	awful.key({ modkey, "Control" }, "g", function()
-		local matcher = function(c) return awful.rules.match(c, { name = "Geary" }) end
-		awful.client.run_or_raise("geary", matcher)
-	end),
-	awful.key({ modkey, "Control" }, "e", function()
-		local matcher = function(c) return awful.rules.match(c, { name = "Eclipse" }) end
-		awful.client.run_or_raise("eclipse", matcher)
-	end),
-	awful.key({ modkey, "Control" }, "b", function()
-		local matcher = function(c) return awful.rules.match(c, { name = "Chromium" }) end
-		awful.client.run_or_raise("chromium", matcher)
-	end),
-	awful.key({ modkey, "Control" }, "t", function()
-		local matcher = function(c) return awful.rules.match(c, { name = "Terminology" }) end
-		awful.client.run_or_raise("terminology", matcher)
-	end),
-	awful.key({ modkey            }, "d",
-		function()
-			local word = io.popen("xsel -o")
-			local text = ""
-			for l in word:lines() do
-				text = text .. l
-			end
-
-			local lookup = io.popen("dict -d wn " .. text .. " 2>&1")
-
-			local resp = ""
-			for l in lookup:lines() do
-				resp = resp .. l .. '\n'
-			end
-
-			local file   = io.open("/home/s/words", "a")
-			file:write(text .. '\n' .. resp .. '\n')
-			file:close()
-
-			naughty.notify({ text = resp })
-
-			word:close()
-			lookup:close()
-		end),
-	awful.key({ modkey, "Control"   }, "p", function() os.execute("synapse") end),
-	awful.key({ modkey, "Control"   }, "f", function() os.execute("catfish") end),
-
-	awful.key({ modkey, "Control"   }, "k",
-		function()
-			awful.prompt.run({ prompt = "Calc: " },
-			mypromptbox[mouse.screen].widget,
-			function(expr)
-				local val = awful.util.eval("return " .. expr)
-
-				naughty.notify({ text = expr .. " = " .. val })
-			end, nil,
-			awful.util.getdir("cache") .. "/calc")
+function rename_tab()
+	awful.prompt.run({
+			prompt = "Rename tab: ",
+			text   = "",
+		},
+		mypromptbox[mouse.screen].widget,
+		function (s)
+			tag      = awful.tag.selected()
+			tag.name = awful.tag.getidx() .. ' ' .. s
 		end)
+end
+
+function cycle_client_forwards()
+	awful.client.focus.history.previous()
+	if client.focus then
+		client.focus:raise()
+	end
+end
+
+function cycle_client_backwards()
+	awful.client.focus.history.next()
+	if client.focus then
+		client.focus:raise()
+	end
+end
+
+function toggle_ftjerm()
+
+	local p = os.execute("pgrep ftjerm")
+	if not p then
+		success = os.execute("ftjerm -o 70 -w 100% -h 100% -fn Mono 13 -ah false &")
+		if not success then
+			naughty.notify({ text = "Could not start ftjerm" })
+		end
+	end
+	os.execute("ftjerm --toggle")
+end
+
+function next_client()
+	awful.client.focus.byidx( 1)
+	if client.focus then client.focus:raise() end
+end
+
+function previous_client()
+	awful.client.focus.byidx(-1)
+	if client.focus then client.focus:raise() end
+end
+
+function cycle_tiles_forwards()
+	tile_index = tile_index + 1
+	if tile_index > #tiles then
+		tile_index = 1
+	end
+	awful.layout.set(tiles[tile_index])
+end
+
+function cycle_tiles_backwards()
+	tile_index = tile_index - 1
+	if tile_index == 0 then
+		tile_index = #tiles
+	end
+	awful.layout.set(tiles[tile_index])
+end
+
+
+function rr_cal()
+	local matcher = function(c) return awful.rules.match(c, { name = "Google Kalender" }) end
+	awful.client.run_or_raise("chromium --app='http://calendar.google.com'", matcher)
+end
+
+function rr_mail()
+	local matcher = function(c) return awful.rules.match(c, { name = "Geary" }) end
+	awful.client.run_or_raise("geary", matcher)
+end
+
+function rr_dev()
+	local matcher = function(c) return awful.rules.match(c, { name = "Eclipse" }) end
+	awful.client.run_or_raise("eclipse", matcher)
+end
+
+function rr_browser()
+	local matcher = function(c) return awful.rules.match(c, { name = "Chromium" }) end
+	awful.client.run_or_raise("chromium", matcher)
+end
+
+function rr_term()
+	local matcher = function(c) return awful.rules.match(c, { name = "Terminology" }) end
+	awful.client.run_or_raise("terminology", matcher)
+end
+
+function prompt_lua()
+	awful.prompt.run({ prompt = "Run Lua code: " },
+	mypromptbox[mouse.screen].widget,
+	awful.util.eval, nil,
+	awful.util.getdir("cache") .. "/history_eval")
+end
+
+function promt_dict()
+	local word = io.popen("xsel -o")
+	local text = ""
+	for l in word:lines() do
+		text = text .. l
+	end
+
+	local lookup = io.popen("dict -d wn " .. text .. " 2>&1")
+
+	local resp = ""
+	for l in lookup:lines() do
+		resp = resp .. l .. '\n'
+	end
+
+	local file   = io.open("/home/s/words", "a")
+	file:write(text .. '\n' .. resp .. '\n')
+	file:close()
+
+	naughty.notify({ text = resp })
+
+	word:close()
+	lookup:close()
+end
+
+function prompt_calc()
+	awful.prompt.run({ prompt = "Calc: " },
+	mypromptbox[mouse.screen].widget,
+	function(expr)
+		local val = awful.util.eval("return " .. expr)
+
+		naughty.notify({ text = expr .. " = " .. val })
+	end, nil,
+	awful.util.getdir("cache") .. "/calc")
+end
+
+function toggle_maximize(c)
+	c.maximized_horizontal = not c.maximized_horizontal
+	c.maximized_vertical   = not c.maximized_vertical
+
+	-- Remove border from windows that are maximized in both
+	-- directions, and then re-add the default theme border when
+	-- the window is restored.
+	if c.maximized then
+		c.border_width = 0
+	else
+		c.border_width = beautiful.border_width
+	end
+end
+
+globalkeys = awful.util.table.join(
+	awful .key({ modkey,           }, "Left",   awful.tag.viewprev),
+	awful .key({ modkey,           }, "Right",  awful.tag.viewnext),
+	awful .key({ modkey,           }, "Escape", awful.tag.history.restore),
+	awful .key({ modkey,           }, "e",      revelation),
+	awful .key({ modkey,           }, "j",      next_client),
+	awful .key({ modkey,           }, "k",      previous_client),
+
+
+-- XKB
+	awful .key({ modkey            }, "i ",     function () kbdcfg.switch() end),
+	awful .key({ modkey, "Shift"   }, "f",      function () awful.util.spawn("setxkbmap -layout fr") end),
+	awful .key({ modkey, "Shift"   }, "e",      function () awful.util.spawn("setxkbmap -layout us") end),
+	awful .key({ modkey, "Shift"   }, "n",      function () awful.util.spawn("setxkbmap -layout no") end),
+
+-- Layout manipulation
+	awful .key({ modkey,           }, "h ",     awful.tag.viewprev),
+	awful .key({ modkey,           }, "l",      awful.tag.viewnext),
+	awful .key({ modkey, "Control" }, "j",      function () awful.screen.focus_relative( 1) end),
+	awful .key({ modkey, "Control" }, "k",      function () awful.screen.focus_relative(-1) end),
+	awful .key({ modkey,           }, "u",      awful.client.urgent.jumpto),
+	awful .key({ modkey,           }, "Tab",    cycle_tag_forwards),
+	awful .key({ modkey, "Shift"   }, "Tab",    cycle_tag_backwards),
+	awful .key({ modkey,           }, "F2",     rename_tag),
+
+-- Standard program
+	awful .key({ modkey,           }, "Return", function () awful.util.spawn(terminal)    end),
+	awful .key({ modkey, "Shift"   }, "Return", function () awful.util.spawn(filemanager) end),
+	awful .key({ modkey,           }, "b",      function () awful.util.spawn(webbrowser)  end),
+	awful .key({ modkey, "Control" }, "r",      awesome.restart),
+	awful .key({ modkey, "Shift"   }, "q",      awesome.quit),
+
+	--                       awful .key({ modkey,             }, "l ",   function () awful.tag.incmwfact( 0.05)    end),
+	--                       awful .key({ modkey,             }, "h",    function () awful.tag.incmwfact(-0.05)    end),
+	awful .key({ modkey, "Shift"   }, "h",      function () awful.tag.incnmaster( 1)      end),
+	awful .key({ modkey, "Shift"   }, "l",      function () awful.tag.incnmaster(-1)      end),
+	awful .key({ modkey, "Control" }, "h",      function () awful.tag.incncol( 1)         end),
+	awful .key({ modkey, "Control" }, "l",      function () awful.tag.incncol(-1)         end),
+	awful .key({ modkey,           }, "space",  function () awful.layout.inc(layouts,  1) end),
+	awful .key({ modkey, "Shift"   }, "space",  function () awful.layout.inc(layouts, -1) end),
+	awful .key({ modkey,           }, "m",      function () awful.layout.set(awful.layout.suit.max) end),
+	awful .key({ modkey,           }, "f",      function () awful.layout.set(awful.layout.suit.max.fullscreen) end),
+
+-- Set and cycle between the tiling layouts
+	awful.key({ modkey            }, "t", cycle_tiles_forwards),
+	awful.key({ modkey, "Shift"   }, "t", cycle_tiles_backwards),
+
+-- Menubar
+	awful.key({ modkey, "Control" }, "c", rr_cal),
+	awful.key({ modkey, "Control" }, "m", rr_mail),
+	awful.key({ modkey, "Control" }, "e", rr_dev),
+	awful.key({ modkey, "Control" }, "b", rr_browser),
+	awful.key({ modkey, "Control" }, "t", rr_term),
+
+-- Launchers
+	awful.key({ modkey,           }, "p", function() menubar.show() end),
+	awful.key({ modkey, "Control" }, "p", function() os.execute("synapse") end),
+	awful.key({ modkey, "Control" }, "f", function() os.execute("catfish") end),
+
+-- Prompts
+	awful.key({ modkey,           }, "r",       function () mypromptbox[mouse.screen]:run() end),
+	awful.key({ modkey,           }, "x",       run_lua_code),
+	awful.key({ modkey, "Control" }, "k",       prompt_calc),
+	awful.key({ modkey            }, "d",       prompt_dict),
+	awful .key({ modkey,           }, "q",      toggle_ftjerm)
 )
 
 clientkeys = awful.util.table.join(
@@ -485,26 +537,7 @@ clientkeys = awful.util.table.join(
 	awful.key({ modkey, "Control" }, "Return", function (c) c:swap(awful.client.getmaster()) end),
 	awful.key({ modkey,           }, "o",      awful.client.movetoscreen                        ),
 	awful.key({ modkey,           }, "t",      function (c) c.ontop = not c.ontop            end),
-	-- awful.key({ modkey,           }, "n",
-	--     function (c)
-	--         -- The client currently has the input focus, so it cannot be
-	--         -- minimized, since minimized clients can't have the focus.
-	--         c.minimized = true
-	--     end),
-	awful.key({ modkey,           }, "y",
-		function (c)
-			c.maximized_horizontal = not c.maximized_horizontal
-			c.maximized_vertical   = not c.maximized_vertical
-
-			-- Remove border from windows that are maximized in both
-			-- directions, and then re-add the default theme border when
-			-- the window is restored.
-			if c.maximized then
-				c.border_width = 0
-			else
-				c.border_width = beautiful.border_width
-			end
-		end)
+	awful.key({ modkey,           }, "y",      toggle_maximize)
 )
 
 -- Bind all key numbers to tags.
@@ -567,6 +600,13 @@ root.keys(globalkeys)
 
 -- Rules
 -- Rules to apply to new clients (through the "manage" signal).
+floating_no_border = {
+	floating     = true,
+	border_width = 0
+}
+max_layout = {
+	layout = awful.layout.suit.max
+}
 awful.rules.rules = {
 	-- All clients will match this rule.
 	{
@@ -579,120 +619,60 @@ awful.rules.rules = {
 			keys         = clientkeys,
 			buttons      = clientbuttons
 		}
-	}, {
-		rule_any = { class = {
-			"docky"                         , " Docky",
-			"ftjerm"                        , " Ftjerm",
-			"galculator"                    , " Galculator",
-			"gimp"                          , " Gimp",
-			"mplayer"                       , " MPlayer",
-			"pinentry"                      , " Pinentry",
-			"stjerm"                        , " Stjerm",
-			"sushi-start"                   , " Sushi-start",
-			"xfce4-panel"                   , " Xfce4-panel",
-			"yakuake"                       , " Yakuake",
-		} },
-		properties = {
-			floating     = true ,
-			border_width = 0
-		}
-	}, {
-		rule_any = { class = {
-			"gloobus-preview"               , " Gloobus-preview",
-			"gloobus-preview-configuration" , " Gloobus-preview-configuration",
-		} },
-		properties = {
-			floating = true,
-			border_width = 2
-		}
-	}, {
-		rule_any = { class = {
-			"chromium", "Chromium"
-		} },
-		properties = {
-			maximized = false
-		}
-	}, {
-		rule_any = { class = {
-			"meld", "Meld",
-			"eclipse", "Eclipse",
-			"dartium", "Dartium"
-		} },
-		properties = {
-			layout = awful.layout.suit.max
-		}
-	}, {
-		rule_any = { class = {
-			"eclipse", "Eclipse",
-			"dartium", "Dartium"
-		} },
-		properties = {
-			tag = tags[1][2],
-		}
-	}, {
-		rule_any = { class = {
-			"skype"   , "Skype"   ,
-			"smuxi"   , "Smuxi"   ,
-			"hexchat" , "Hexchat"
-		} },
-		properties = {
-			tag = tags[1][3]
-		}
-	}, {
-		rule_any = { class = {
-			"geary", "Geary"
-		} },
-		properties = {
-			tag = tags[1][4]
-		}
-	}, {
-		rule_any = { class = {
-			"gmpc", "Gmpc", "sonata", "Sonata"
-		} },
-		properties = {
-			tag = tags[1][5]
-		}
-	}
+	},
+	{ rule = { class = "Gloobus-preview"               }, properties = { floating = true, border_width = 0 }  } ,
+	{ rule = { class = "Docky"                         }, properties = floating_no_border  } ,
+	{ rule = { class = "Ftjerm"                        }, properties = floating_no_border  } ,
+	{ rule = { class = "Galculator"                    }, properties = floating_no_border  } ,
+	{ rule = { class = "Gimp"                          }, properties = floating_no_border  } ,
+	-- { rule = { class = "Gloobus-preview"               }, properties = floating_no_border  } ,
+	{ rule = { class = "Gloobus-preview-configuration" }, properties = floating_no_border  } ,
+	{ rule = { class = "MPlayer"                       }, properties = floating_no_border  } ,
+	{ rule = { class = "Pinentry"                      }, properties = floating_no_border  } ,
+	{ rule = { class = "Stjerm"                        }, properties = floating_no_border  } ,
+	{ rule = { class = "Sushi-start"                   }, properties = floating_no_border  } ,
+	{ rule = { class = "Xfce4-panel"                   }, properties = floating_no_border  } ,
+	{ rule = { class = "Yakuake"                       }, properties = floating_no_border  } ,
+
+	{ rule = { class = "Dartium"                       }, properties = max_layout          } ,
+	{ rule = { class = "Eclipse"                       }, properties = max_layout          } ,
+	{ rule = { class = "Meld"                          }, properties = max_layout          } ,
+
+	{ rule = { class = "Chromium"                      }, properties = { maximized = false } },
+
+
+	{ rule = { class = "Dartium"                       }, properties = { tag = tags[1][2]  } } ,
+	{ rule = { class = "Eclipse"                       }, properties = { tag = tags[1][2]  } } ,
+
+	{ rule = { class = "Hexchat"                       }, properties = { tag = tags[1][3]  } } ,
+	{ rule = { class = "Skype"                         }, properties = { tag = tags[1][3]  } } ,
+	{ rule = { class = "Smuxi"                         }, properties = { tag = tags[1][3]  } } ,
+
+	{ rule = { class = "Geary"                         }, properties = { tag = tags[1][4]  } } ,
+
+	{ rule = { class = "Gmpc"                          }, properties = { tag = tags[1][5]  } } ,
+	{ rule = { class = "Sonata"                        }, properties = { tag = tags[1][5]  } }
 }
 
--- Signals
--- Signal function to execute when a new client appears.
-client.connect_signal("manage", function (c, startup)
-	-- Enable sloppy focus
-	c:connect_signal("mouse::enter", function(c)
-		if awful.layout.get(c.screen) ~= awful.layout.suit.magnifier
-			and awful.client.focus.filter(c) then
-			client.focus = c
-		end
-	end)
 
-	if not startup then
-		-- Set the windows at the slave,
-		-- i.e. put it at the end of others instead of setting it master.
-		-- awful.client.setslave(c)
 
-		-- Put windows in a smart way, only if they does not set an initial position.
-		if not c.size_hints.user_position and not c.size_hints.program_position then
-			-- awful.placement.under_mouse(c)
-			-- awful.placement.no_offscreen(c)
-			awful.placement.centered(c)
-		end
-	end
-
-	local titlebars_enabled = false
-	if titlebars_enabled and (c.type == "normal" or c.type == "dialog") then
+function set_titlebar(c)
+	if c.type == "normal"
+	or c.type == "dialog" then
 		-- buttons for the titlebar
 		local buttons = awful.util.table.join(
-			awful.button({ }, 1, function()
-				client.focus = c
-				c:raise()
-				awful.mouse.client.move(c)
-			end),
-			awful.button({ }, 3, function()
-				client.focus = c
-				c:raise()
-				awful.mouse.client.resize(c)
-			end)
+			awful.button({}, 1,
+				function()
+					client.focus = c
+					c:raise()
+					awful.mouse.client.move(c)
+				end),
+			awful.button({}, 3,
+				function()
+					client.focus = c
+					c:raise()
+					awful.mouse.client.resize(c)
+				end)
 		)
 
 		-- Widgets that are aligned to the left
@@ -722,12 +702,63 @@ client.connect_signal("manage", function (c, startup)
 		layout:set_middle(middle_layout)
 
 		awful.titlebar(c):set_widget(layout)
+		awful.titlebar.hide(c)
 	end
-end)
+end
+-- Signals
+-- When a client disappears
+client.connect_signal("unmanage",
+	function(c)
+		local next = awful.client.next(1)
+		if next and
+		   next == awful.client.next(1) then
+			next.border_width = 0
+		end
+	end)
+
+-- When a client appears
+client.connect_signal("manage",
+	function (c, startup)
+
+		if awful.client.floating.get(c) then
+			c.border_width = 0
+		end
+		-- Enable sloppy focus
+		c:connect_signal("mouse::enter",
+			function(c)
+				if awful.layout.get(c.screen) ~= awful.layout.suit.magnifier
+					and awful.client.focus.filter(c) then
+					client.focus = c
+				end
+			end)
+
+		if not startup then
+			-- Set the windows at the slave,
+			-- i.e. put it at the end of others instead of setting it master.
+			-- awful.client.setslave(c)
+
+			-- Put windows in a smart way, only if they does not set an initial position.
+			if not c.size_hints.user_position and not c.size_hints.program_position then
+				-- awful.placement.under_mouse(c)
+				-- awful.placement.no_offscreen(c)
+				awful.placement.centered(c)
+			end
+		end
+
+		set_titlebar(c)
+
+	end)
+
+function focused_client()
+	return tags[mouse.screen][awful.tag.getidx()]:clients()[1]
+end
 
 function single_client_on_tag()
-	local current_tag = tags[mouse.screen][awful.tag.getidx()]
-	return #current_tag:clients() == 1
+	tag = tags[mouse.screen][awful.tag.getidx()]
+	if tag then
+		return tag:clients() == 1
+	end
+	return false
 end
 
 function is_single_layout()
@@ -739,39 +770,58 @@ function is_single_layout()
 	return false
 end
 
-
-function on_client_focus(c)
-	if c.maximized_horizontal == true and c.maximized_vertical == true
-	or single_client_on_tag()
-	or is_single_layout() then
+function toggle_border(b, c)
+	if b then
 		c.border_width = 0
 	else
 		c.border_width = beautiful.border_width
 	end
-
-	c.border_color = beautiful.border_focus
 end
-client.connect_signal("focus", on_client_focus)
 
-client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 
-client.connect_signal("unmanage", function(c)
-		local next = awful.client.next(1)
-		if next and
-		   next == awful.client.next(1) then
-			next.border_width = 0
+
+function on_client_focus(c)
+	toggle_border(
+		c.maximized or
+		single_client_on_tag() or
+		is_single_layout(), c)
+
+end
+client.connect_signal("focus",
+	function(c)
+		c.border_color = beautiful.border_focus
+		on_client_focus(c)
+	end)
+
+client.connect_signal("unfocus",
+	function(c)
+		c.border_color = beautiful.border_normal
+		on_client_focus(c)
+	end)
+
+client.connect_signal("property::maximized",
+	function(c)
+		toggle_border(c.maximized, c)
+	end)
+
+client.connect_signal("property::floating",
+	function(c)
+		toggle_border(true, c)
+		if awful.client.floating.get(c) then
+			if not awful.titlebar then
+				set_titlebar(c)
+			end
+			awful.titlebar.show(c)
+		else
+			awful.titlebar.hide(c)
 		end
 	end)
 
 tag.connect_signal("property::layout",
 	function(t)
 		local layoutname = awful.layout.getname(awful.layout.get(mouse.screen))
-		if layoutname == "max" or layoutname == "full" then
-			local c = client.focus
-			if c then
-				c.border_width = 0
-			end
-		end
+		local c = client.focus
+		toggle_border(c and (layoutname == "max" or layoutname == "full"), c)
 	end)
 
 
@@ -784,24 +834,23 @@ wallpaper_index  =  math.random( 1, #wallpaper_files)
 
 -- setup the timer
 wallpaper_timer = timer { timeout = wallpaper_timeout }
-wallpaper_timer:connect_signal("timeout", function()
+wallpaper_timer:connect_signal("timeout",
+	function()
+		-- set wallpaper to current index for all screens
+		for s = 1, screen.count() do
+			gears.wallpaper.maximized(wallpaper_path .. wallpaper_files[wallpaper_index], s, true)
+		end
 
-	-- set wallpaper to current index for all screens
-	for s = 1, screen.count() do
-		gears.wallpaper.maximized(wallpaper_path .. wallpaper_files[wallpaper_index], s, true)
-	end
+		-- stop the timer (we don't need multiple instances running at the same time)
+		wallpaper_timer:stop()
 
-	-- stop the timer (we don't need multiple instances running at the same time)
-	wallpaper_timer:stop()
+		-- get next random index
+		wallpaper_index = math.random( 1, #wallpaper_files)
 
-	-- get next random index
-	wallpaper_index = math.random( 1, #wallpaper_files)
-
-	--restart the timer
-	wallpaper_timer.timeout = wallpaper_timeout
-	wallpaper_timer:start()
-end)
+		--restart the timer
+		wallpaper_timer.timeout = wallpaper_timeout
+		wallpaper_timer:start()
+	end)
 
 -- initial start when rc.lua is first run
 wallpaper_timer:start()
-
