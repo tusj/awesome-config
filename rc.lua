@@ -309,9 +309,9 @@ root.buttons(awful.util.table.join(
 
 -- Key bindings
 
-function rename_tab()
+function rename_tag()
 	awful.prompt.run({
-			prompt = "Rename tab: ",
+			prompt = "Rename tag: ",
 			text   = "",
 		},
 		mypromptbox[mouse.screen].widget,
@@ -371,6 +371,12 @@ function cycle_tiles_backwards()
 		tile_index = #tiles
 	end
 	awful.layout.set(tiles[tile_index])
+end
+
+function first_free_tag()
+	for t in awful.tag.gettags(mouse.screen) do
+		naughty.notify({text = t})
+	end
 end
 
 -- Run or raise
@@ -459,47 +465,48 @@ function toggle_maximize(c)
 end
 
 globalkeys = awful.util.table.join(
-	awful .key({ modkey,           }, "Left",   awful.tag.viewprev),
-	awful .key({ modkey,           }, "Right",  awful.tag.viewnext),
-	awful .key({ modkey,           }, "Escape", awful.tag.history.restore),
-	awful .key({ modkey,           }, "e",      revelation),
-	awful .key({ modkey,           }, "j",      next_client),
-	awful .key({ modkey,           }, "k",      previous_client),
+	awful.key({ modkey, "Shift"   }, "Right",  first_free_tag),
+	awful.key({ modkey,           }, "Left",   awful.tag.viewprev),
+	awful.key({ modkey,           }, "Right",  awful.tag.viewnext),
+	awful.key({ modkey,           }, "Escape", awful.tag.history.restore),
+	awful.key({ modkey,           }, "e",      revelation),
+	awful.key({ modkey,           }, "j",      next_client),
+	awful.key({ modkey,           }, "k",      previous_client),
 
 
 -- XKB
-	awful .key({ modkey            }, "i ",     function () kbdcfg.switch() end),
-	awful .key({ modkey, "Shift"   }, "f",      function () awful.util.spawn("setxkbmap -layout fr") end),
-	awful .key({ modkey, "Shift"   }, "e",      function () awful.util.spawn("setxkbmap -layout us") end),
-	awful .key({ modkey, "Shift"   }, "n",      function () awful.util.spawn("setxkbmap -layout no") end),
+	awful.key({ modkey            }, "i ",     function () kbdcfg.switch() end),
+	awful.key({ modkey, "Shift"   }, "f",      function () awful.util.spawn("setxkbmap -layout fr") end),
+	awful.key({ modkey, "Shift"   }, "e",      function () awful.util.spawn("setxkbmap -layout us") end),
+	awful.key({ modkey, "Shift"   }, "n",      function () awful.util.spawn("setxkbmap -layout no") end),
 
 -- Layout manipulation
-	awful .key({ modkey,           }, "h ",     awful.tag.viewprev),
-	awful .key({ modkey,           }, "l",      awful.tag.viewnext),
-	awful .key({ modkey, "Control" }, "j",      function () awful.screen.focus_relative( 1) end),
-	awful .key({ modkey, "Control" }, "k",      function () awful.screen.focus_relative(-1) end),
-	awful .key({ modkey,           }, "u",      awful.client.urgent.jumpto),
-	awful .key({ modkey,           }, "Tab",    cycle_tag_forwards),
-	awful .key({ modkey, "Shift"   }, "Tab",    cycle_tag_backwards),
-	awful .key({ modkey,           }, "F2",     rename_tag),
+	awful.key({ modkey,           }, "h ",     awful.tag.viewprev),
+	awful.key({ modkey,           }, "l",      awful.tag.viewnext),
+	awful.key({ modkey, "Control" }, "j",      function () awful.screen.focus_relative( 1) end),
+	awful.key({ modkey, "Control" }, "k",      function () awful.screen.focus_relative(-1) end),
+	awful.key({ modkey,           }, "u",      awful.client.urgent.jumpto),
+	awful.key({ modkey,           }, "Tab",    cycle_tag_forwards),
+	awful.key({ modkey, "Shift"   }, "Tab",    cycle_tag_backwards),
+	awful.key({ modkey,           }, "F2",     rename_tag),
 
 -- Standard program
-	awful .key({ modkey,           }, "Return", function () awful.util.spawn(terminal)    end),
-	awful .key({ modkey, "Shift"   }, "Return", function () awful.util.spawn(filemanager) end),
-	awful .key({ modkey,           }, "b",      function () awful.util.spawn(webbrowser)  end),
-	awful .key({ modkey, "Control" }, "r",      awesome.restart),
-	awful .key({ modkey, "Shift"   }, "q",      awesome.quit),
+	awful.key({ modkey,           }, "Return", function () awful.util.spawn(terminal)    end),
+	awful.key({ modkey, "Shift"   }, "Return", function () awful.util.spawn(filemanager) end),
+	awful.key({ modkey,           }, "b",      function () awful.util.spawn(webbrowser)  end),
+	awful.key({ modkey, "Control" }, "r",      awesome.restart),
+	awful.key({ modkey, "Shift"   }, "q",      awesome.quit),
 
 	--                       awful .key({ modkey,             }, "l ",   function () awful.tag.incmwfact( 0.05)    end),
 	--                       awful .key({ modkey,             }, "h",    function () awful.tag.incmwfact(-0.05)    end),
-	awful .key({ modkey, "Shift"   }, "h",      function () awful.tag.incnmaster( 1)      end),
-	awful .key({ modkey, "Shift"   }, "l",      function () awful.tag.incnmaster(-1)      end),
-	awful .key({ modkey, "Control" }, "h",      function () awful.tag.incncol( 1)         end),
-	awful .key({ modkey, "Control" }, "l",      function () awful.tag.incncol(-1)         end),
-	awful .key({ modkey,           }, "space",  function () awful.layout.inc(layouts,  1) end),
-	awful .key({ modkey, "Shift"   }, "space",  function () awful.layout.inc(layouts, -1) end),
-	awful .key({ modkey,           }, "m",      function () awful.layout.set(awful.layout.suit.max) end),
-	awful .key({ modkey,           }, "f",      function () awful.layout.set(awful.layout.suit.max.fullscreen) end),
+	awful.key({ modkey, "Shift"   }, "h",      function () awful.tag.incnmaster( 1)      end),
+	awful.key({ modkey, "Shift"   }, "l",      function () awful.tag.incnmaster(-1)      end),
+	awful.key({ modkey, "Control" }, "h",      function () awful.tag.incncol( 1)         end),
+	awful.key({ modkey, "Control" }, "l",      function () awful.tag.incncol(-1)         end),
+	awful.key({ modkey,           }, "space",  function () awful.layout.inc(layouts,  1) end),
+	awful.key({ modkey, "Shift"   }, "space",  function () awful.layout.inc(layouts, -1) end),
+	awful.key({ modkey,           }, "m",      function () awful.layout.set(awful.layout.suit.max) end),
+	awful.key({ modkey,           }, "f",      function () awful.layout.set(awful.layout.suit.max.fullscreen) end),
 
 -- Set and cycle between the tiling layouts
 	awful.key({ modkey            }, "t", cycle_tiles_forwards),
@@ -785,23 +792,25 @@ function toggle_border(b, c)
 end
 
 
-function on_client_focus(c)
+function on_client_focus_change(c)
 	toggle_border(
 		c.maximized or
 		single_client_on_tag() or
 		is_single_layout(), c)
 end
+
 client.connect_signal("focus",
 	function(c)
 		local tag = awful.tag.getidx()
 		c.border_color = beautiful.border_focus
-		on_client_focus(c)
+		on_client_focus_change(c)
+		awful.client.focus.byidx(0, c)
 	end)
 
 client.connect_signal("unfocus",
 	function(c)
 		c.border_color = beautiful.border_normal
-		on_client_focus(c)
+		on_client_focus_change(c)
 	end)
 
 client.connect_signal("property::maximized",
@@ -863,7 +872,7 @@ wallpaper_timer:connect_signal("timeout",
 wallpaper_timer:start()
 
 -- TODO
+-- fix cairo bug
 -- find first available desktop
 -- name clients by letter
--- set keybinding for applications
--- set critical color for memory
+-- set keyboard layout for applications
