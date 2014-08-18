@@ -1,3 +1,4 @@
+local gears = require("gears")
 local util = {}
 -- scan directory, and optionally filter output
 function util.scandir(directory, filter)
@@ -13,6 +14,12 @@ function util.scandir(directory, filter)
 		end
 	end
 	return t
+end
+
+function util.setbg(bg)
+	for s = 1, screen.count() do
+		gears.wallpaper.maximized(bg, s, true)
+	end
 end
 
 return util

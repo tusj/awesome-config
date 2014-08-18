@@ -48,9 +48,9 @@ beautiful.init("/home/s/.config/awesome/theme.lua")
 revelation.init() -- after beatuiful.init(), init revelation
 
 -- to change wallpaper randomly
-theme.wallpaper        = "/usr/share/backgrounds/hawaii/Arancio.jpg"
-wallpaper_path         = "/usr/share/backgrounds/hawaii/" -- has to end with /
-wallpaper_timeout      = 3600 -- seconds interval to change wallpaper
+wallpaper_path         = "/home/s/.config/awesome/backgrounds/" -- has to end with /
+theme.wallpaper        = wallpaper_path .. "ferret.jpg"
+wallpaper_timeout      = 2700 -- seconds interval to change wallpaper
 
 -- This is used later as the default terminal and editor to run.
 terminal    = "terminology"
@@ -854,10 +854,7 @@ wallpaper_timer = timer { timeout = wallpaper_timeout }
 wallpaper_timer:connect_signal("timeout",
 	function()
 		-- set wallpaper to current index for all screens
-		for s = 1, screen.count() do
-			gears.wallpaper.maximized(wallpaper_path .. wallpaper_files[wallpaper_index], s, true)
-		end
-
+		util.setbg(wallpaper_path .. wallpaper_files[wallpaper_index])
 		-- stop the timer (we don't need multiple instances running at the same time)
 		wallpaper_timer:stop()
 
@@ -871,6 +868,7 @@ wallpaper_timer:connect_signal("timeout",
 
 -- initial start when rc.lua is first run
 wallpaper_timer:start()
+util.setbg(wallpaper_path .. wallpaper_files[wallpaper_index])
 
 -- TODO
 -- fix cairo bug
