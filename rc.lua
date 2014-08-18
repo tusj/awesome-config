@@ -249,7 +249,7 @@ for s = 1, screen.count() do
 		graph_line_color       = beautiful.border_focus_widget,
 		text_background_color  = "#ffffff00",
 		text_color             = beautiful.fg_normal,
-		interface              = "wlp12s0",
+		interface              = io.popen('bash -c \'ip l | grep wlp | cut -d " " -f2\' | cut -b1-6'):read(),
 		show_text              = true,
 		v_margin               = 0,
 	})
