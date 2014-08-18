@@ -652,6 +652,7 @@ awful.rules.rules = {
 	{ rule = { class = "Geary"                         }, properties = { tag = tags[1][4]  } } ,
 
 	{ rule = { class = "Gmpc"                          }, properties = { tag = tags[1][5]  } } ,
+	{ rule = { class = "cantata"                       }, properties = { tag = tags[1][5]  } } ,
 	{ rule = { class = "Sonata"                        }, properties = { tag = tags[1][5]  } }
 }
 
