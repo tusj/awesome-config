@@ -524,8 +524,8 @@ globalkeys = awful.util.table.join(
 
 -- Launchers
 	awful.key({ modkey,           }, "p", function() menubar.show() end),
-	awful.key({ modkey, "Control" }, "p", function() os.execute("synapse") end),
-	awful.key({ modkey, "Control" }, "f", function() os.execute("catfish") end),
+	awful.key({ modkey, "Control" }, "p", function() os.execute("synapse &") end),
+	awful.key({ modkey, "Control" }, "f", function() os.execute("catfish &") end),
 
 -- Prompts
 	awful.key({ modkey,           }, "r", function () mypromptbox[mouse.screen]:run() end),
