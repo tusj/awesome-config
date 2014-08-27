@@ -433,6 +433,8 @@ function prompt_dict()
 	-- index 3 contains the return code
 	local returncode = {file:close()}
 
+	-- os.execute('bash -c "dict -fd english ' .. text .. ' | zenity --text-info &"')
+	-- os.execute('bash -c "echo \"' .. resp .. '\" | zenity --text-info &"')
 	naughty.notify({ text = resp })
 
 	word:close()
@@ -463,6 +465,7 @@ function toggle_maximize(c)
 		c.border_width = beautiful.border_width
 	end
 end
+
 
 globalkeys = awful.util.table.join(
 	awful.key({ modkey, "Shift"   }, "Right",  first_free_tag),
@@ -547,25 +550,27 @@ clientkeys = awful.util.table.join(
 for i = 1, 9 do
 	globalkeys = awful.util.table.join(globalkeys,
 	-- View tag only.
-	awful.key({ modkey }, "#" .. i + 9,
+	awful.key({ modkey                     }, "#" .. i + 9,
 		function ()
-			local screen = mouse.screen
-			local tag = awful.tag.gettags(screen)[i]
-			if tag then
-				awful.tag.viewonly(tag)
+			for screen = 1, screen.count() do
+				local tag = awful.tag.gettags(screen)[i]
+				if tag then
+					awful.tag.viewonly(tag)
+				end
 			end
 		end),
 	-- Toggle tag.
-	awful.key({ modkey, "Control" }, "#" .. i + 9,
+	awful.key({ modkey, "Control"          }, "#" .. i + 9,
 		function ()
-			local screen = mouse.screen
-			local tag = awful.tag.gettags(screen)[i]
-			if tag then
-				awful.tag.viewtoggle(tag)
+			for screen = 1, screen.count() do
+				local tag = awful.tag.gettags(screen)[i]
+				if tag then
+					awful.tag.viewtoggle(tag)
+				end
 			end
 		end),
 	-- Move client to tag.
-	awful.key({ modkey, "Shift" }, "#" .. i + 9,
+	awful.key({ modkey, "Shift"            }, "#" .. i + 9,
 		function ()
 			if client.focus then
 				local tag = awful.tag.gettags(client.focus.screen)[i]
@@ -653,6 +658,7 @@ awful.rules.rules = {
 
 	{ rule = { class = "Gmpc"                          }, properties = { tag = tags[1][5]  } } ,
 	{ rule = { class = "cantata"                       }, properties = { tag = tags[1][5]  } } ,
+	{ rule = { class = "Ario"                          }, properties = { tag = tags[1][5]  } } ,
 	{ rule = { class = "Sonata"                        }, properties = { tag = tags[1][5]  } }
 }
 
@@ -875,3 +881,4 @@ util.setbg(wallpaper_path .. wallpaper_files[wallpaper_index])
 -- find first available desktop
 -- name clients by letter
 -- set keyboard layout for applications
+-- rotate through all clients on a tag, not per screen
