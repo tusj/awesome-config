@@ -655,6 +655,7 @@ awful.rules.rules = {
 	{ rule = { class = "Smuxi"                         }, properties = { tag = tags[1][3]  } } ,
 
 	{ rule = { class = "Geary"                         }, properties = { tag = tags[1][4]  } } ,
+	{ rule = { class = "Liferea"                       }, properties = { tag = tags[1][4]  } } ,
 
 	{ rule = { class = "Gmpc"                          }, properties = { tag = tags[1][5]  } } ,
 	{ rule = { class = "cantata"                       }, properties = { tag = tags[1][5]  } } ,
@@ -882,3 +883,4 @@ util.setbg(wallpaper_path .. wallpaper_files[wallpaper_index])
 -- name clients by letter
 -- set keyboard layout for applications
 -- rotate through all clients on a tag, not per screen
+-- add possibility to search for window
