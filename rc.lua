@@ -49,7 +49,6 @@ revelation.init() -- after beatuiful.init(), init revelation
 
 -- to change wallpaper randomly
 wallpaper_path         = "/home/s/.config/awesome/backgrounds/" -- has to end with /
-theme.wallpaper        = wallpaper_path .. "ferret.jpg"
 wallpaper_timeout      = 2700 -- seconds interval to change wallpaper
 
 -- This is used later as the default terminal and editor to run.
@@ -845,23 +844,24 @@ tag.connect_signal("property::layout",
 		local c = client.focus
 		toggle_border(c and is_single_layout(), c)
 	end)
--- tag.connect_signal("property::selected",
--- 	function(t)
---
 
 
+wallpaper_files = {}
+local i = 1
+for l in io.popen('bash -c "find ' .. wallpaper_path .. ' -type f -name \'*.jpg\'"'):lines() do
+	wallpaper_files[i] = l
+	i = i + 1
+end
 
--- configuration - edit to your liking
-wallpaper_filter = function(s) return string.match(s,"%.png$") or string.match(s,"%.jpg$") end
-wallpaper_files  = util.scandir(wallpaper_path, wallpaper_filter)
-wallpaper_index  =  math.random( 1, #wallpaper_files)
+wallpaper_index  = math.random( 1, #wallpaper_files)
 
 -- setup the timer
 wallpaper_timer = timer { timeout = wallpaper_timeout }
 wallpaper_timer:connect_signal("timeout",
 	function()
 		-- set wallpaper to current index for all screens
-		util.setbg(wallpaper_path .. wallpaper_files[wallpaper_index])
+		util.setbg(wallpaper_files[wallpaper_index])
+		-- util.setbg(wallpaper_files[wallpaper_index])
 		-- stop the timer (we don't need multiple instances running at the same time)
 		wallpaper_timer:stop()
 
@@ -875,7 +875,7 @@ wallpaper_timer:connect_signal("timeout",
 
 -- initial start when rc.lua is first run
 wallpaper_timer:start()
-util.setbg(wallpaper_path .. wallpaper_files[wallpaper_index])
+util.setbg(wallpaper_files[wallpaper_index])
 
 -- TODO
 -- fix cairo bug
