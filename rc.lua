@@ -53,7 +53,7 @@ wallpaper_timeout      = 2700 -- seconds interval to change wallpaper
 
 -- This is used later as the default terminal and editor to run.
 terminal    = "terminology"
-filemanager = "nautilus"
+filemanager = "pcmanfm"
 webbrowser  = "chromium"
 editor      = "vim"
 editor_cmd  = terminal .. " -e " .. editor
@@ -106,7 +106,7 @@ bar_height          = 30
 margin              = bar_height / 20
 widget_width        = bar_height - 2 * margin
 widget_height       = widget_width
-icon_dir            = "/home/s/Dropbox/icons"
+icon_dir            = "/home/s/Dropbox/pictures/icons"
 icon_filter         = function(s) return string.match(s,"%.png$") or string.match(s,"%.jpg$") or string.match(s, "%.svg") end
 icon_files          = util.scandir(icon_dir, icon_filter)
 launcher_icon       = icon_dir .. '/' .. icon_files[math.random( 1, #icon_files)]
