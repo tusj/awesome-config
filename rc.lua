@@ -334,18 +334,6 @@ function cycle_client_backwards()
 	end
 end
 
-function toggle_ftjerm()
-
-	local p = os.execute("pgrep ftjerm")
-	if not p then
-		success = os.execute("ftjerm -o 70 -w 100% -h 100% -fn Mono 13 -ah false &")
-		if not success then
-			naughty.notify({ text = "Could not start ftjerm" })
-		end
-	end
-	os.execute("ftjerm --toggle")
-end
-
 function next_client()
 	awful.client.focus.byidx( 1)
 	if client.focus then client.focus:raise() end
@@ -530,8 +518,7 @@ globalkeys = awful.util.table.join(
 	awful.key({ modkey,           }, "r", function () mypromptbox[mouse.screen]:run() end),
 	awful.key({ modkey,           }, "x", run_lua_code),
 	awful.key({ modkey, "Control" }, "k", prompt_calc),
-	awful.key({ modkey            }, "d", prompt_dict),
-	awful.key({ modkey,           }, "q", toggle_ftjerm)
+	awful.key({ modkey            }, "d", prompt_dict)
 )
 
 clientkeys = awful.util.table.join(
@@ -627,7 +614,6 @@ awful.rules.rules = {
 	},
 	{ rule = { class = "Gloobus-preview"               }, properties = { floating = true, border_width = 0 }  } ,
 	{ rule = { class = "Docky"                         }, properties = floating_no_border  } ,
-	{ rule = { class = "Ftjerm"                        }, properties = floating_no_border  } ,
 	{ rule = { class = "Galculator"                    }, properties = floating_no_border  } ,
 	{ rule = { class = "Gimp"                          }, properties = floating_no_border  } ,
 	-- { rule = { class = "Gloobus-preview"               }, properties = floating_no_border  } ,
@@ -635,9 +621,13 @@ awful.rules.rules = {
 	{ rule = { class = "MPlayer"                       }, properties = floating_no_border  } ,
 	{ rule = { class = "Pinentry"                      }, properties = floating_no_border  } ,
 	{ rule = { class = "Stjerm"                        }, properties = floating_no_border  } ,
+	{ rule = { class = "Ftjerm"                        }, properties = floating_no_border  } ,
 	{ rule = { class = "Sushi-start"                   }, properties = floating_no_border  } ,
 	{ rule = { class = "Xfce4-panel"                   }, properties = floating_no_border  } ,
 	{ rule = { class = "Yakuake"                       }, properties = floating_no_border  } ,
+	{ rule = { class = "guake"                         }, properties = floating_no_border  } ,
+	{ rule = { class = "Guake"                         }, properties = floating_no_border  } ,
+	{ rule = { class = "Pavucontrol"                   }, properties = floating_no_border  } ,
 
 	{ rule = { class = "Dartium"                       }, properties = max_layout          } ,
 	{ rule = { class = "Eclipse"                       }, properties = max_layout          } ,
@@ -876,6 +866,9 @@ wallpaper_timer:connect_signal("timeout",
 -- initial start when rc.lua is first run
 wallpaper_timer:start()
 util.setbg(wallpaper_files[wallpaper_index])
+
+
+os.execute("ftjerm -k f12 -o 0 -fn Mono 12 -w 60% -h 50% &")
 
 -- TODO
 -- fix cairo bug
