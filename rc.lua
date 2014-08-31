@@ -117,10 +117,15 @@ menubar.utils.terminal         = terminal -- Set the terminal for applications t
 menubar.geometry               = { height = bar_height * 2 }
 -- Tags
 -- Define a tag table which hold all screen tags.
+la = awful.layout.suit
+blobs = {
+	names   = { "1 web", "2 prg", "3 chat", "4 mail", "5 music", 6,       7,       8,       9 },
+	layouts = { la.tile, la.tile, la.tile,  la.max,   la.max,    la.tile, la.tile, la.tile, la.tile }
+}
 tags = {}
 for s = 1, screen.count() do
 	-- Each screen has its own tag table.
-	tags[s] = awful.tag({ "1 web", "2 prg", "3 chat", "4 mail", "5 music", 6, 7, 8, 9 }, s, layouts[1])
+	tags[s] = awful.tag(blobs.names, s, blobs.layouts)
 end
 
 -- Menu
@@ -868,7 +873,7 @@ wallpaper_timer:start()
 util.setbg(wallpaper_files[wallpaper_index])
 
 
-os.execute("ftjerm -k f12 -o 0 -fn Mono 12 -w 60% -h 50% &")
+os.execute("ftjerm -m windows -k f12 -o 0 -fn Mono 12 -bg white -w 60% -h 50% &")
 
 -- TODO
 -- fix cairo bug
