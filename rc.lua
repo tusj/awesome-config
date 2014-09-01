@@ -49,7 +49,7 @@ revelation.init() -- after beatuiful.init(), init revelation
 
 -- to change wallpaper randomly
 wallpaper_path         = "/home/s/.config/awesome/backgrounds/" -- has to end with /
-wallpaper_timeout      = 2700 -- seconds interval to change wallpaper
+wallpaper_timeout      = 1350 -- seconds interval to change wallpaper
 
 -- This is used later as the default terminal and editor to run.
 terminal    = "terminology"
@@ -618,21 +618,24 @@ awful.rules.rules = {
 		}
 	},
 	{ rule = { class = "Gloobus-preview"               }, properties = { floating = true, border_width = 0 }  } ,
+	-- { rule = { class = "Gloobus-preview"               }, properties = floating_no_border  } ,
+	{ rule = { class = "Catfish"                       }, properties = floating_no_border  } ,
 	{ rule = { class = "Docky"                         }, properties = floating_no_border  } ,
+	{ rule = { class = "Ftjerm"                        }, properties = floating_no_border  } ,
 	{ rule = { class = "Galculator"                    }, properties = floating_no_border  } ,
 	{ rule = { class = "Gimp"                          }, properties = floating_no_border  } ,
-	-- { rule = { class = "Gloobus-preview"               }, properties = floating_no_border  } ,
 	{ rule = { class = "Gloobus-preview-configuration" }, properties = floating_no_border  } ,
+	{ rule = { class = "Guake"                         }, properties = floating_no_border  } ,
 	{ rule = { class = "MPlayer"                       }, properties = floating_no_border  } ,
+	{ rule = { class = "Pavucontrol"                   }, properties = floating_no_border  } ,
 	{ rule = { class = "Pinentry"                      }, properties = floating_no_border  } ,
 	{ rule = { class = "Stjerm"                        }, properties = floating_no_border  } ,
-	{ rule = { class = "Ftjerm"                        }, properties = floating_no_border  } ,
 	{ rule = { class = "Sushi-start"                   }, properties = floating_no_border  } ,
+	-- { rule = { class = "Synapse"                       }, properties = floating_no_border  } ,
+	-- { rule = { class = "synapse"                       }, properties = floating_no_border  } ,
 	{ rule = { class = "Xfce4-panel"                   }, properties = floating_no_border  } ,
 	{ rule = { class = "Yakuake"                       }, properties = floating_no_border  } ,
 	{ rule = { class = "guake"                         }, properties = floating_no_border  } ,
-	{ rule = { class = "Guake"                         }, properties = floating_no_border  } ,
-	{ rule = { class = "Pavucontrol"                   }, properties = floating_no_border  } ,
 
 	{ rule = { class = "Dartium"                       }, properties = max_layout          } ,
 	{ rule = { class = "Eclipse"                       }, properties = max_layout          } ,
@@ -848,20 +851,34 @@ for l in io.popen('bash -c "find ' .. wallpaper_path .. ' -type f -name \'*.jpg\
 	i = i + 1
 end
 
-wallpaper_index  = math.random( 1, #wallpaper_files)
+wallpaper_indexes = {}
+for i = 1, #wallpaper_files do
+	wallpaper_indexes[i] = i
+end
+for i = 1, #wallpaper_files do
+	j = math.random(1, #wallpaper_indexes)
+	tmp = wallpaper_indexes[i]
+	wallpaper_indexes[i] = wallpaper_indexes[j]
+end
 
+
+i = 1
 -- setup the timer
 wallpaper_timer = timer { timeout = wallpaper_timeout }
 wallpaper_timer:connect_signal("timeout",
 	function()
 		-- set wallpaper to current index for all screens
-		util.setbg(wallpaper_files[wallpaper_index])
+		util.setbg(wallpaper_files[wallpaper_indexes[i]])
 		-- util.setbg(wallpaper_files[wallpaper_index])
 		-- stop the timer (we don't need multiple instances running at the same time)
 		wallpaper_timer:stop()
 
 		-- get next random index
-		wallpaper_index = math.random( 1, #wallpaper_files)
+		if i == #wallpaper_indexes then
+			i = 1
+		else
+			i = i + 1
+		end
 
 		--restart the timer
 		wallpaper_timer.timeout = wallpaper_timeout
