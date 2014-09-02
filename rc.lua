@@ -259,18 +259,6 @@ for s = 1, screen.count() do
 	})
 
 
-	-- MPD
-	-- Initialize widget
-	mpdwidget = wibox.widget.textbox()
-	-- Register widget
-	vicious.register(mpdwidget, vicious.widgets.mpd,
-		function (mpdwidget, args)
-			if args["{state}"] == "Stop" then
-				return " - "
-			else
-				return args["{Artist}"]..' - '.. args["{Title}"]
-			end
-		end, 10)
 
     -- Create the wibox
 	-- uncommented for other panel
@@ -458,8 +446,15 @@ function toggle_maximize(c)
 	end
 end
 
+function move_to_screen(i)
+	return function(c)
+		awful.client.movetoscreen(c, i)
+	end
+end
 
 globalkeys = awful.util.table.join(
+	awful.key({ modkey,           }, "F1",     move_to_screen(1)),
+	awful.key({ modkey,           }, "F2",     move_to_screen(2)),
 	awful.key({ modkey, "Shift"   }, "Right",  first_free_tag),
 	awful.key({ modkey,           }, "Left",   awful.tag.viewprev),
 	awful.key({ modkey,           }, "Right",  awful.tag.viewnext),
@@ -595,6 +590,20 @@ clientbuttons = awful.util.table.join(
 -- Set keys
 root.keys(globalkeys)
 
+
+function move_to_active_screen_and_center(c)
+	move_timer = timer { timeout = 0.4 }
+
+	move_timer:connect_signal("timeout",
+		function()
+			awful.client.movetoscreen(c, mouse.screen)
+			awful.placement.centered(c)
+			move_timer:stop()
+		end)
+
+	move_timer:start()
+end
+
 -- Rules
 -- Rules to apply to new clients (through the "manage" signal).
 floating_no_border = {
@@ -643,6 +652,8 @@ awful.rules.rules = {
 
 	{ rule = { class = "Chromium"                      }, properties = { maximized = false } },
 
+	{ rule = { class = "Gloobus-preview"               }, properties = floating_no_border
+                                                        , callback = move_to_active_screen_and_center },
 
 	{ rule = { class = "Dartium"                       }, properties = { tag = tags[1][2]  } } ,
 	{ rule = { class = "Eclipse"                       }, properties = { tag = tags[1][2]  } } ,
