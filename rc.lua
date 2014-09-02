@@ -354,9 +354,13 @@ function cycle_tiles_backwards()
 end
 
 function first_free_tag()
-	for t in awful.tag.gettags(mouse.screen) do
-		naughty.notify({text = t})
+	tags = awful.tag.gettags(mouse.screen)
+	for i = 1, #tags do
+		if #tags[i]:clients() == 0 then
+			return tags[i]
+		end
 	end
+	return nil
 end
 
 -- Run or raise
@@ -455,7 +459,7 @@ end
 globalkeys = awful.util.table.join(
 	awful.key({ modkey,           }, "F1",     move_to_screen(1)),
 	awful.key({ modkey,           }, "F2",     move_to_screen(2)),
-	awful.key({ modkey, "Shift"   }, "Right",  first_free_tag),
+	awful.key({ modkey,           }, "Up",     function() awful.tag.viewonly(first_free_tag()) end),
 	awful.key({ modkey,           }, "Left",   awful.tag.viewprev),
 	awful.key({ modkey,           }, "Right",  awful.tag.viewnext),
 	awful.key({ modkey,           }, "Escape", awful.tag.history.restore),
@@ -783,11 +787,12 @@ end
 
 function single_client_on_tag()
 	-- There is a period where no tag is selected
+	local tags = awful.tag.gettags(mouse.screen)
 	local tag = awful.tag.getidx()
 	if not tag then
 		return false
 	end
-	return #tags[mouse.screen][tag]:clients() == 1
+	return #tags[tag]:clients() == 1
 end
 
 function is_single_layout()
@@ -905,7 +910,6 @@ os.execute("ftjerm -m windows -k f12 -o 0 -fn Mono 12 -bg white -w 60% -h 50% &"
 
 -- TODO
 -- fix cairo bug
--- find first available desktop
 -- name clients by letter
 -- set keyboard layout for applications
 -- rotate through all clients on a tag, not per screen
