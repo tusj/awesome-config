@@ -253,7 +253,7 @@ for s = 1, screen.count() do
 		graph_line_color       = beautiful.border_focus_widget,
 		text_background_color  = "#ffffff00",
 		text_color             = beautiful.fg_normal,
-		interface              = io.popen('bash -c \'ip l | grep wlp | cut -d " " -f2\' | cut -b1-6'):read(),
+		interface              = io.popen('bash -c \'ip l | grep wlp | cut -d " " -f2\' | cut -b1-7'):read(),
 		show_text              = true,
 		v_margin               = 0,
 	})
@@ -877,6 +877,16 @@ for i = 1, #wallpaper_files do
 	wallpaper_indexes[i] = wallpaper_indexes[j]
 end
 
+function setbg(wallpaper)
+	for s = 1, screen.count() do
+		gears.wallpaper.maximized(wallpaper, s)
+		-- gears.wallpaper.fit(wallpaper, s)
+		-- gears.wallpaper.tiled(wallpaper, s)
+		-- gears.wallpaper.centered(wallpaper, s)
+		-- util.setbg(wallpaper)
+	end
+end
+
 
 i = 1
 -- setup the timer
@@ -884,10 +894,10 @@ wallpaper_timer = timer { timeout = wallpaper_timeout }
 wallpaper_timer:connect_signal("timeout",
 	function()
 		-- set wallpaper to current index for all screens
-		util.setbg(wallpaper_files[wallpaper_indexes[i]])
 		-- util.setbg(wallpaper_files[wallpaper_index])
 		-- stop the timer (we don't need multiple instances running at the same time)
 		wallpaper_timer:stop()
+		setbg(wallpaper_files[wallpaper_indexes[i]])
 
 		-- get next random index
 		if i == #wallpaper_indexes then
@@ -903,7 +913,7 @@ wallpaper_timer:connect_signal("timeout",
 
 -- initial start when rc.lua is first run
 wallpaper_timer:start()
-util.setbg(wallpaper_files[wallpaper_index])
+setbg(wallpaper_files[wallpaper_indexes[i]])
 
 
 os.execute("ftjerm -m windows -k f12 -o 0 -fn Mono 12 -bg white -w 60% -h 50% &")
