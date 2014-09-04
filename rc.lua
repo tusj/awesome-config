@@ -630,7 +630,6 @@ awful.rules.rules = {
 			buttons      = clientbuttons
 		}
 	},
-	{ rule = { class = "Gloobus-preview"               }, properties = { floating = true, border_width = 0 }  } ,
 	-- { rule = { class = "Gloobus-preview"               }, properties = floating_no_border  } ,
 	{ rule = { class = "Catfish"                       }, properties = floating_no_border  } ,
 	{ rule = { class = "Docky"                         }, properties = floating_no_border  } ,
@@ -903,7 +902,7 @@ wallpaper_timer:connect_signal("timeout",
 
 -- initial start when rc.lua is first run
 wallpaper_timer:start()
-util.setbg(wallpaper_files[wallpaper_index])
+util.setbg(wallpaper_files[wallpaper_indexes[i]])
 
 
 os.execute("ftjerm -m windows -k f12 -o 0 -fn Mono 12 -bg white -w 60% -h 50% &")

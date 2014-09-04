@@ -5,8 +5,10 @@ theme = {}
 
 theme.font                = "Ubuntu, Light 11"
 
-theme.bg_normal           = "#222222"
-theme.bg_focus            = "#3e732d"
+theme.bg_normal           = "#000000"
+-- theme.bg_focus            = "#3e732d"
+-- theme.bg_focus            = "#234900ff"
+theme.bg_focus            = "#1c3900ff"
 theme.bg_focus_darker     = "#293624"
 theme.bg_focus_widget     = "#3e732dff"
 theme.bg_widget           = "#00000000" -- has to define alpha as bling bling requires it
@@ -15,7 +17,7 @@ theme.bg_urgent           = "#ff6666"
 theme.bg_minimize         = "#555555"
 theme.bg_systray          = theme.bg_normal
 
-theme.fg_normal           = "#aaaaaa"
+theme.fg_normal           = "#ffffff"
 theme.fg_focus            = "#ffffff"
 theme.fg_urgent           = "#ffffff"
 theme.fg_minimize         = "#ffffff"
@@ -23,9 +25,9 @@ theme.fg_widget           = "#33cc00ff"
 theme.fg_widget_attention = "#ff9000ff"
 theme.fg_widget_critical  = "#ff3300ff"
 
-theme.border_width        = 1
+theme.border_width        = 2
 theme.border_normal       = "#000000ff"
-theme.border_focus        = "#33cc00ff"
+theme.border_focus        = "#b3daa7ff"
 theme.border_marked       = "#91231cff"
 theme.border_focus_widget = "#33cc00ff"
 
