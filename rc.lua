@@ -102,7 +102,9 @@ local layouts = {
 
 -- Display
 widget_rounded_size = 0.2
-bar_height          = 30
+screen_height          = io.popen("bash -c \"xrandr | grep '*' | grep -oh \"[0-9]\\+x[0-9]\\+\" | cut -d \"x\" -f2\""):read()
+naughty.notify({text = screen_height})
+bar_height          = 40
 margin              = bar_height / 20
 widget_width        = bar_height - 2 * margin
 widget_height       = widget_width
