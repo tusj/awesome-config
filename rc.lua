@@ -1,18 +1,19 @@
 -- Standard awesome library
-local gears                  = require("gears")
-local awful                  = require("awful")
-                               require("eminent")
-awful.rules                  = require("awful.rules")
                                require("awful.autofocus")
-local wibox                  = require("wibox") -- Widget and layout library
+                               require("eminent")
+local awful                  = require("awful")
+      awful.rules            = require("awful.rules")
 local beautiful              = require("beautiful") -- Theme handling library
-local naughty                = require("naughty") -- Notification library
+local blingbling             = require("blingbling")
+local gears                  = require("gears")
 local menubar                = require("menubar")
-local vicious                = require("vicious")
+local naughty                = require("naughty") -- Notification library
+local persistence            = require("persistence")
 local revelation             = require("revelation")
 local ror                    = require("aweror")
-local blingbling             = require("blingbling")
 local util                   = require("util")
+local vicious                = require("vicious")
+local wibox                  = require("wibox") -- Widget and layout library
 
 
 
@@ -29,16 +30,17 @@ end
 -- Handle runtime errors after startup
 do
 	local in_error = false
-	awesome.connect_signal("debug::error", function (err)
-		-- Make sure we don't go into an endless error loop
-		if in_error then return end
-		in_error = true
+	awesome.connect_signal("debug::error",
+		function (err)
+			-- Make sure we don't go into an endless error loop
+			if in_error then return end
+			in_error = true
 
-		naughty.notify({ preset = naughty.config.presets.critical,
-		title = "Oops, an error happened!",
-		text = err })
-		in_error = false
-end)
+			naughty.notify({ preset = naughty.config.presets.critical,
+			title = "Oops, an error happened!",
+			text = err })
+			in_error = false
+		end)
 end
 
 -- Variable definitions
@@ -103,7 +105,6 @@ local layouts = {
 -- Display
 widget_rounded_size = 0.2
 screen_height          = io.popen("bash -c \"xrandr | grep '*' | grep -oh \"[0-9]\\+x[0-9]\\+\" | cut -d \"x\" -f2\""):read()
-naughty.notify({text = screen_height})
 bar_height          = 40
 margin              = bar_height / 20
 widget_width        = bar_height - 2 * margin
@@ -310,8 +311,13 @@ function rename_tag()
 		},
 		mypromptbox[mouse.screen].widget,
 		function (s)
-			tag      = awful.tag.selected()
-			tag.name = awful.tag.getidx() .. ' ' .. s
+			local index = awful.tag.getidx()
+			for screen = 1, screen.count() do
+				tag = awful.tag.gettags(screen)[index]
+				tag.name = index .. ' ' .. s
+			end
+			-- tag      = awful.tag.selected()
+			-- tag.name = awful.tag.getidx() .. ' ' .. s
 		end)
 end
 
