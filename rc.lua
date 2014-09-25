@@ -923,7 +923,7 @@ wallpaper_timer:start()
 setbg(wallpaper_files[wallpaper_indexes[i]])
 
 
-os.execute("ftjerm -m windows -k f12 -o 0 -fn Mono 12 -bg white -w 60% -h 50% &")
+os.execute("ftjerm -m windows -k f12 -o 0 -fn Mono 12 -bg white -w 60% -h 50% \"tmux -2\" &")
 
 -- TODO
 -- fix cairo bug
