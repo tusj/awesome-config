@@ -656,6 +656,8 @@ awful.rules.rules = {
 	{ rule = { class = "Xfce4-panel"                   }, properties = floating_no_border  } ,
 	{ rule = { class = "Yakuake"                       }, properties = floating_no_border  } ,
 	{ rule = { class = "guake"                         }, properties = floating_no_border  } ,
+	{ rule = { name  = "Error messages"                }, properties = floating_no_border  } ,
+	{ rule = { name  = "erythrina"                     }, properties = { height = 20, floating = true, sticky = true, ontop = true}  } ,
 
 	{ rule = { class = "Dartium"                       }, properties = max_layout          } ,
 	{ rule = { class = "Eclipse"                       }, properties = max_layout          } ,
@@ -924,6 +926,7 @@ setbg(wallpaper_files[wallpaper_indexes[i]])
 
 
 os.execute("ftjerm -m windows -k f12 -o 0 -fn Mono 12 -bg white -w 60% -h 50% \"tmux -2\" &")
+os.execute("/home/s/bin/setup_notify_send")
 
 -- TODO
 -- fix cairo bug
@@ -931,3 +934,5 @@ os.execute("ftjerm -m windows -k f12 -o 0 -fn Mono 12 -bg white -w 60% -h 50% \"
 -- set keyboard layout for applications
 -- rotate through all clients on a tag, not per screen
 -- add possibility to search for window
+
+-- vim: set foldmethod=indent:
