@@ -3,7 +3,7 @@
 ---------------------------
 theme = {}
 
-theme.font_size           = 15
+theme.font_size           = 14
 theme.font                = "Ubuntu, Light " .. theme.font_size
 -- theme.font                = "Cantarell, " .. theme.font_size
 -- theme.font                = "URW Gothic L, Book " .. theme.font_size
@@ -11,10 +11,10 @@ theme.font                = "Ubuntu, Light " .. theme.font_size
 
 theme.bg_normal           = "#000000"
 -- theme.bg_focus            = "#3e732d"
--- theme.bg_focus            = "#234900ff"
-theme.bg_focus            = "#1c3900ff"
+-- theme.bg_focus            = "#234900"
+theme.bg_focus            = "#1c3900"
 theme.bg_focus_darker     = "#293624"
-theme.bg_focus_widget     = "#3e732dff"
+theme.bg_focus_widget     = "#3e732d"
 theme.bg_widget           = "#00000000" -- has to define alpha as bling bling requires it
 
 theme.bg_urgent           = "#ff6666"
@@ -25,15 +25,17 @@ theme.fg_normal           = "#ffffff"
 theme.fg_focus            = "#ffffff"
 theme.fg_urgent           = "#ffffff"
 theme.fg_minimize         = "#ffffff"
-theme.fg_widget           = "#33cc00ff"
-theme.fg_widget_attention = "#ff9000ff"
-theme.fg_widget_critical  = "#ff3300ff"
+theme.fg_widget           = "#33cc00"
+theme.fg_attention = "#ff9000"
+theme.fg_critical  = "#ff3300"
+theme.fg_widget_attention = theme.fg_attention
+theme.fg_widget_critical  = theme.fg_critical
 
 theme.border_width        = 2
-theme.border_normal       = "#000000ff"
-theme.border_focus        = "#b3daa7ff"
-theme.border_marked       = "#91231cff"
-theme.border_focus_widget = "#33cc00ff"
+theme.border_normal       = "#000000"
+theme.border_focus        = "#b3daa7"
+theme.border_marked       = "#91231c"
+theme.border_focus_widget = "#33cc00"
 
 -- There are other variable sets
 -- overriding the default one when

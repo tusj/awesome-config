@@ -238,7 +238,7 @@ for s = 1, screen.count() do
 
 	vicious.register(memwidget, vicious.widgets.mem, '$1', 5)
 
-	-- Temp
+	-- Temperature
 	tempwidget                  = blingbling.value_text_box({
 		width                  = widget_width,
 		height                 = widget_height,
@@ -247,8 +247,12 @@ for s = 1, screen.count() do
 		font_size              = theme.font_size,
 		label                  = "$percent °C",
 		graph_background_color = beautiful.bg_widget,
-		graph_color            = beautiful.bg_focus_widget,
-		graph_line_color       = beautiful.border_focus_widget
+		graph_line_color       = beautiful.border_focus_widget,
+		values_text_color = {
+			{ beautiful.fg_normal, 0 },
+			{ beautiful.fg_attention, 0.7 },
+			{ beautiful.fg_critical,  0.7 }
+		}
 	})
 	vicious.register(tempwidget, temp, '$1', 1)
 
