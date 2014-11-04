@@ -251,7 +251,7 @@ for s = 1, screen.count() do
 		values_text_color = {
 			{ beautiful.fg_normal, 0 },
 			{ beautiful.fg_attention, 0.7 },
-			{ beautiful.fg_critical,  0.7 }
+			{ beautiful.fg_critical,  0.75 }
 		}
 	})
 	vicious.register(tempwidget, temp, '$1', 1)
