@@ -14,6 +14,7 @@ local ror                    = require("aweror")
 local util                   = require("util")
 local vicious                = require("vicious")
 local wibox                  = require("wibox") -- Widget and layout library
+local temp                   = require("temp")
 
 
 
@@ -237,6 +238,20 @@ for s = 1, screen.count() do
 
 	vicious.register(memwidget, vicious.widgets.mem, '$1', 5)
 
+	-- Temp
+	tempwidget                  = blingbling.value_text_box({
+		width                  = widget_width,
+		height                 = widget_height,
+		rounded_size           = widget_rounded_size,
+		v_margin               = 0,
+		font_size              = theme.font_size,
+		label                  = "$percent °C",
+		graph_background_color = beautiful.bg_widget,
+		graph_color            = beautiful.bg_focus_widget,
+		graph_line_color       = beautiful.border_focus_widget
+	})
+	vicious.register(tempwidget, temp, '$1', 1)
+
 	-- CPU
 	cpuwidget                  = blingbling.line_graph({
 		width                  = widget_width,
@@ -247,6 +262,7 @@ for s = 1, screen.count() do
 		graph_color            = beautiful.bg_focus_widget,
 		graph_line_color       = beautiful.border_focus_widget
 	})
+
 	vicious.register(cpuwidget, vicious.widgets.cpu, '$1', 1)
 
 	-- NET
@@ -281,6 +297,7 @@ for s = 1, screen.count() do
 
 	right_layout:add(memwidget)
 	right_layout:add(cpuwidget)
+	right_layout:add(tempwidget)
 	right_layout:add(netwidget)
 	right_layout:add(clock)
 	right_layout:add(mylayoutbox[s])
