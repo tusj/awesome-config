@@ -3,10 +3,11 @@
 ---------------------------
 theme = {}
 
--- theme.font                = "Cantarell, 14"
-theme.font                = "URW Gothic L, Book 14"
--- theme.font                = "Ubuntu, Light 14"
--- theme.font                = "Delicious, Roman 14"
+theme.font_size           = 15
+theme.font                = "Ubuntu, Light " .. theme.font_size
+-- theme.font                = "Cantarell, " .. theme.font_size
+-- theme.font                = "URW Gothic L, Book " .. theme.font_size
+-- theme.font                = "Delicious, Roman " .. theme.font_size
 
 theme.bg_normal           = "#000000"
 -- theme.bg_focus            = "#3e732d"
