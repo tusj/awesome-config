@@ -67,16 +67,16 @@ modkey = "Mod4"
 naughty.config.padding                   = 15
 naughty.config.spacing                   = 15
 naughty.config.gap                       = 20
-naughty.config.presets.low.bg            = "00000070"
+naughty.config.presets.low.bg            = "00000000"
 naughty.config.presets.low.fg            = beautiful.fg_focus
-naughty.config.presets.normal.bg         = "00000070"
+naughty.config.presets.normal.bg         = "00000000"
 naughty.config.presets.normal.fg         = beautiful.fg_focus
 naughty.config.presets.critical.bg       = beautiful.bg_urgent .. "70"
 naughty.config.presets.critical.fg       = beautiful.fg_urgent
 naughty.config.defaults.timeout          = 10
 naughty.config.defaults.margin           = 10
 naughty.config.defaults.hover_timeout    = 1
-naughty.config.defaults.border_color     = "00000070"
+naughty.config.defaults.border_color     = "00000000"
 
 -- Table of layouts to cover with awful.layout.inc, order matters
 tile_index = 1
@@ -490,9 +490,10 @@ end
 globalkeys = awful.util.table.join(
 	awful.key({ modkey,           }, "F1",     move_to_screen(1)),
 	awful.key({ modkey,           }, "F2",     move_to_screen(2)),
-	awful.key({ modkey,           }, "Up",     function() awful.tag.viewonly(first_free_tag()) end),
-	awful.key({ modkey,           }, "Left",   awful.tag.viewprev),
-	awful.key({ modkey,           }, "Right",  awful.tag.viewnext),
+	awful.key({ modkey,           }, "Right",  function() awful.tag.incmwfact(0.035) end),
+	awful.key({ modkey,           }, "Left",   function() awful.tag.incmwfact(-0.035) end),
+	awful.key({ modkey,           }, "Up",     function() awful.client.incwfact(0.035) end),
+	awful.key({ modkey,           }, "Down",   function() awful.client.incwfact(-0.035) end),
 	awful.key({ modkey,           }, "Escape", awful.tag.history.restore),
 	awful.key({ modkey,           }, "e",      revelation),
 	awful.key({ modkey,           }, "j",      next_client),
