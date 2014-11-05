@@ -66,7 +66,7 @@ modkey = "Mod4"
 -- Naughty configuration
 naughty.config.padding                   = 15
 naughty.config.spacing                   = 15
-naughty.config.gap                   = 20
+naughty.config.gap                       = 20
 naughty.config.presets.low.bg            = "00000070"
 naughty.config.presets.low.fg            = beautiful.fg_focus
 naughty.config.presets.normal.bg         = "00000070"
@@ -75,7 +75,6 @@ naughty.config.presets.critical.bg       = beautiful.bg_urgent .. "70"
 naughty.config.presets.critical.fg       = beautiful.fg_urgent
 naughty.config.defaults.timeout          = 10
 naughty.config.defaults.margin           = 10
-naughty.config.defaults.width            = 300
 naughty.config.defaults.hover_timeout    = 1
 naughty.config.defaults.border_color     = "00000070"
 
