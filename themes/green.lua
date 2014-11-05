@@ -15,7 +15,7 @@ theme.bg_normal           = "#000000"
 theme.bg_focus            = "#1c3900"
 theme.bg_focus_darker     = "#293624"
 theme.bg_focus_widget     = "#3e732d"
-theme.bg_widget           = "#00000000" -- has to define alpha as bling bling requires it
+theme.bg_widget           = "#000000" -- has to define alpha as bling bling requires it
 
 theme.bg_urgent           = "#ff6666"
 theme.bg_minimize         = "#555555"
@@ -36,6 +36,7 @@ theme.border_normal       = "#000000"
 theme.border_focus        = "#b3daa7"
 theme.border_marked       = "#91231c"
 theme.border_focus_widget = "#33cc00"
+
 
 -- There are other variable sets
 -- overriding the default one when
