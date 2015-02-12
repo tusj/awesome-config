@@ -23,6 +23,7 @@ local function worker(format)
 			temp[1] = string.match(line, "[%+%-]%d+")
 		end
 	end
+	sensors:close()
 	return temp
 end
 -- }}}
