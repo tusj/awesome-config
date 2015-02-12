@@ -18,7 +18,8 @@ local function worker(format)
 
 	sensors = io.popen("sensors")
 	for line in sensors:lines() do
-		if string.starts(line, "CPUTIN:") then
+		if string.starts(line, "CPUTIN:") or
+		   string.starts(line, "Core 0:") then
 			temp[1] = string.match(line, "[%+%-]%d+")
 		end
 	end
